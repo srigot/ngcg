@@ -1,0 +1,102 @@
+<form [formGroup]="congeForm" novalidate (ngSubmit)="onSubmit()">
+  <mat-card class="shipping-card">
+    <mat-card-header>
+      <mat-card-title>Congé</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Date début" formControlName="dateDebut">
+            <mat-error *ngIf="congeForm.controls['dateDebut'].hasError('required')">
+              La date de début est <strong>obligatoire</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Date fin" formControlName="dateFin">
+            <mat-error *ngIf="congeForm.controls['dateFin'].hasError('required')">
+              La date de fin est <strong>obligatoire</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div formArrayName="joursPris" *ngFor="let item of congeForm.get('joursPris').controls; let i = index;">
+        <div class="row" [formGroupName]="i">
+          <div class="col">
+            <mat-form-field class="full-width">
+              <mat-select placeholder="Type de congés" formControlName="type">
+                <mat-option *ngFor="let type of listeTypesConges | async " [value]="type.id">
+                  {{ type.nom }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="item.controls['type'].hasError('required')">
+                Le type de congés est <strong>obligatoire</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Nombre de jours" formControlName="nombreJours">
+              <mat-error *ngIf="item.controls['nombreJours'].hasError('required')">
+                Le nombre de jours est <strong>obligatoire</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <button *ngIf="i == 0" mat-icon-button arial-label="Ajouter type" type="button" (click)="addType()">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button *ngIf="i > 0" mat-icon-button arial-label="Supprimer type" type="button" (click)="deleteType(i)">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Nombre de jours" formControlName="nombreJours">
+            <mat-error *ngIf="addressForm.controls['nombreJours'].hasError('required')">
+              Le nombre de jours est <strong>obligatoire</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col">
+          <mat-form-field class="full-width">
+            <mat-select placeholder="Type de congés" formControlName="type">
+              <mat-option *ngFor="let state of states" [value]="state.abbreviation">
+                {{ state.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="addressForm.controls['state'].hasError('required')">
+              State is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div> -->
+      <!-- <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput #postalCode maxlength="5" placeholder="Postal Code" type="number"
+              formControlName="postalCode">
+            <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
+          </mat-form-field>
+        </div>
+      </div> -->
+      <!-- <div class="row">
+        <div class="col">
+          <mat-radio-group formControlName="shipping">
+            <mat-radio-button value="free">Free Shipping</mat-radio-button>
+            <mat-radio-button value="priority">Priority Shipping</mat-radio-button>
+            <mat-radio-button value="nextday">Next Day Shipping</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div> -->
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
