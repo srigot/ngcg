@@ -1,4 +1,4 @@
-<button mat-fab aria-label="Ajouter" class="fabButton" [routerLink]="['/types/edit']">
+<button mat-fab aria-label="Ajouter" class="fabButton" [routerLink]="['/types/new']">
   <mat-icon>add</mat-icon>
 </button>
 
@@ -27,7 +27,7 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let type">
-        <button mat-icon-button [routerLink]="['/types/edit', 'type.nom']">
+        <button mat-icon-button [routerLink]="['/types/edit', type.key]">
           <mat-icon>edit</mat-icon>
         </button>
       </td>

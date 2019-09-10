@@ -1,6 +1,7 @@
 import { firestore } from 'firebase';
 
 export interface TypeConges {
+  key: string;
   dateDebut: Date;
   dateFin: Date;
   nom: string;

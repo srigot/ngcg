@@ -9,7 +9,7 @@ import { TypeConges } from 'src/app/models/type-conges';
   styleUrls: ['./liste-types.component.scss']
 })
 export class ListeTypesComponent implements OnInit {
-  displayedColumns: string[] = ['dateDebut', 'dateFin', 'nom', 'nombreJours', 'actions'];
+  displayedColumns: string[] = ['nom', 'dateDebut', 'dateFin', 'nombreJours', 'actions'];
   listeTypes: Observable<TypeConges[]>;
 
   constructor(congesService: CongesService) {

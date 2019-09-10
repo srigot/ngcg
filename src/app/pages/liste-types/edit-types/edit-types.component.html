@@ -17,12 +17,16 @@
       <div class="row">
         <div class="col">
           <mat-form-field class="full-width">
-            <input matInput placeholder="Date début" formControlName="dateDebut">
+            <input matInput [matDatepicker]="dateDebutPicker" placeholder="Date de début" formControlName="dateDebut">
+            <mat-datepicker-toggle matSuffix [for]="dateDebutPicker"></mat-datepicker-toggle>
+            <mat-datepicker #dateDebutPicker></mat-datepicker>
           </mat-form-field>
         </div>
         <div class="col">
           <mat-form-field class="full-width">
-            <input matInput placeholder="Date fin" formControlName="dateFin">
+            <input matInput [matDatepicker]="dateFinPicker" placeholder="Date de fin" formControlName="dateFin">
+            <mat-datepicker-toggle matSuffix [for]="dateFinPicker"></mat-datepicker-toggle>
+            <mat-datepicker #dateFinPicker></mat-datepicker>
           </mat-form-field>
         </div>
       </div>
@@ -38,7 +42,8 @@
       </div>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button color="primary" type="submit">Submit</button>
+      <button mat-raised-button color="primary" type="submit">Valider</button>
+      <button mat-raised-button color="warn" type="button" (click)="onDelete()">Supprimer</button>
     </mat-card-actions>
   </mat-card>
 </form>
