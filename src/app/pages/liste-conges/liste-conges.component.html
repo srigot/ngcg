@@ -1,4 +1,4 @@
-<button mat-fab aria-label="Ajouter" class="fabButton" [routerLink]="['/conges/edit']">
+<button mat-fab aria-label="Ajouter" class="fabButton" [routerLink]="['/conges/new']">
   <mat-icon>add</mat-icon>
 </button>
 
@@ -17,6 +17,15 @@
     <ng-container matColumnDef="joursPris">
       <th mat-header-cell *matHeaderCellDef>Jours pris</th>
       <td mat-cell *matCellDef="let conges"> {{ conges.totalJours }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let conges">
+        <button mat-icon-button [routerLink]="['/conges/edit', conges.key]">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

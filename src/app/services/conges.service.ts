@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Conges, FirestoreConges } from '../models/conges';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { TypeConges, FirestoreTypeConges } from '../models/type-conges';
 import { firestore } from 'firebase';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,28 @@ import { firestore } from 'firebase';
 export class CongesService {
   private typesRef: AngularFirestoreCollection<FirestoreTypeConges>;
   private congesRef: AngularFirestoreCollection<FirestoreConges>;
+  private userConnected: boolean;
 
-  constructor(db: AngularFirestore) {
-    this.typesRef = db.collection('types');
-    this.congesRef = db.collection('conges');
+  private listeConges: Observable<Conges[]>;
+
+  constructor(private db: AngularFirestore, public afAuth: AngularFireAuth) {
+    this.typesRef = db.collection('users/guest/types');
+    this.congesRef = db.collection('users/guest/conges');
+    this.afAuth.user.subscribe((user) => {
+      if (user !== null) {
+        this.typesRef = db.collection('users/' + user.uid + '/types');
+        this.congesRef = db.collection('users/' + user.uid + '/conges');
+        this.userConnected = true;
+      } else {
+        this.userConnected = false;
+        this.typesRef = db.collection('users/guest/types');
+        this.congesRef = db.collection('users/guest/conges');
+      }
+    });
+  }
+
+  getCongesRef(user): AngularFirestoreCollection<FirestoreConges> {
+    return this.db.collection('users/' + user.uid + '/conges');
   }
 
   getAllConges(): Observable<Conges[]> {
@@ -28,6 +47,23 @@ export class CongesService {
         });
       }),
     );
+    // return this.afAuth.user.pipe(
+    //   switchMap((user) => {
+    //     if (user !== null) {
+    //       return this.getCongesRef(user).snapshotChanges().pipe(
+    //         map(actions => {
+    //           return actions.map(a => {
+    //             const data = a.payload.doc.data() as FirestoreConges;
+    //             const key = a.payload.doc.id;
+    //             return this.firestoreToConges(key, data);
+    //           });
+    //         }),
+    //       );
+    //     } else {
+    //       return of([] as Conges[]);
+    //     }
+    //   })
+    // );
   }
 
   getConge(key: string): Observable<Conges> {

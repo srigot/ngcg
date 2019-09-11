@@ -14,7 +14,7 @@ interface AffichageConges extends Conges {
   styleUrls: ['./liste-conges.component.scss']
 })
 export class ListeCongesComponent implements OnInit {
-  displayedColumns: string[] = ['dateDebut', 'dateFin', 'joursPris'];
+  displayedColumns: string[] = ['dateDebut', 'dateFin', 'joursPris', 'actions'];
   public listeConges: Observable<AffichageConges[]>;
 
   constructor(congesService: CongesService) {

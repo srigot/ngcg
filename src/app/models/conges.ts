@@ -1,15 +1,21 @@
-import { AssoTypes } from './asso-types';
 import { firestore } from 'firebase';
+import { DocumentReference } from '@angular/fire/firestore';
 
 export interface Conges {
   key: string;
   dateDebut: Date;
   dateFin: Date;
-  joursPris: AssoTypes[];
+  joursPris: [{
+    type: string,
+    nombreJours: number,
+  }];
 }
 
 export interface FirestoreConges {
   dateDebut: firestore.Timestamp;
   dateFin: firestore.Timestamp;
-  joursPris: AssoTypes[];
+  joursPris: [{
+    type: string,
+    nombreJours: number,
+  }];
 }

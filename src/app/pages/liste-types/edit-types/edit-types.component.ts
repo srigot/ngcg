@@ -23,8 +23,9 @@ export class EditTypesComponent implements OnInit, OnDestroy {
   private modeEdition = false;
   private key: string;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router,
-    private congesService: CongesService, private dialog: MatDialog) { }
+  constructor(
+    private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private congesService: CongesService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     if (this.isUrlModeEdition()) {
