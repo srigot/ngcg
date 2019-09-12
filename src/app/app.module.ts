@@ -17,6 +17,7 @@ import localeFr from '@angular/common/locales/fr';
 import { LoginComponent } from './pages/login/login.component';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
+import { ComponentsModule } from './components/components.module';
 
 registerLocaleData(localeFr, 'fr');
 
@@ -40,6 +41,7 @@ registerLocaleData(localeFr, 'fr');
     MatSidenavModule,
     MatListModule,
     MatButtonModule,
+    ComponentsModule,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'fr' }],
   bootstrap: [AppComponent]
