@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { Conges, FirestoreConges } from '../models/conges';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { map, switchMap } from 'rxjs/operators';
@@ -33,12 +33,35 @@ export class CongesService {
     });
   }
 
-  getCongesRef(user): AngularFirestoreCollection<FirestoreConges> {
-    return this.db.collection('users/' + user.uid + '/conges');
+  private getCongesRef(uid: string): AngularFirestoreCollection<FirestoreConges> {
+    return this.db.collection('users/' + uid + '/conges', ref => ref.orderBy('dateDebut'));
+  }
+
+  private getTypesRef(uid: string): AngularFirestoreCollection<FirestoreTypeConges> {
+    return this.db.collection('users/' + uid + '/types', ref => ref.orderBy('dateDebut'));
+  }
+
+  private isUserConnected<T>(cbOK: (uid: string) => Observable<T>, cbKO: () => Observable<T>): Observable<T> {
+    return this.afAuth.user.pipe(
+      switchMap((user) => {
+        if (user !== null) {
+          return cbOK(user.uid);
+        } else {
+          return cbKO();
+        }
+      }),
+    );
   }
 
   getAllConges(): Observable<Conges[]> {
-    return this.congesRef.snapshotChanges().pipe(
+    return this.isUserConnected<Conges[]>(
+      (uid) => this.getAllCongesUser(uid),
+      () => of([] as Conges[]),
+    );
+  }
+
+  private getAllCongesUser(uid): Observable<Conges[]> {
+    return this.getCongesRef(uid).snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
           const data = a.payload.doc.data() as FirestoreConges;
@@ -47,23 +70,6 @@ export class CongesService {
         });
       }),
     );
-    // return this.afAuth.user.pipe(
-    //   switchMap((user) => {
-    //     if (user !== null) {
-    //       return this.getCongesRef(user).snapshotChanges().pipe(
-    //         map(actions => {
-    //           return actions.map(a => {
-    //             const data = a.payload.doc.data() as FirestoreConges;
-    //             const key = a.payload.doc.id;
-    //             return this.firestoreToConges(key, data);
-    //           });
-    //         }),
-    //       );
-    //     } else {
-    //       return of([] as Conges[]);
-    //     }
-    //   })
-    // );
   }
 
   getConge(key: string): Observable<Conges> {
@@ -85,7 +91,14 @@ export class CongesService {
   }
 
   getAllTypes(): Observable<TypeConges[]> {
-    return this.typesRef.snapshotChanges().pipe(
+    return this.isUserConnected<TypeConges[]>(
+      (uid) => this.getAllTypesUser(uid),
+      () => of([] as TypeConges[]),
+    );
+
+  }
+  private getAllTypesUser(uid): Observable<TypeConges[]> {
+    return this.getTypesRef(uid).snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
           const data = a.payload.doc.data() as FirestoreTypeConges;
@@ -93,6 +106,15 @@ export class CongesService {
           return this.firestoreToTypeConges(key, data);
         });
       }),
+    );
+  }
+
+  getAllTypesAvecRestant(): Observable<TypeConges[]> {
+    return this.isUserConnected<TypeConges[]>(
+      (uid) => combineLatest(this.getAllTypesUser(uid), this.getAllCongesUser(uid)).pipe(
+        map(([listeTypes, listeConges]) => this.calculerCongesRestants(listeTypes, listeConges)),
+      ),
+      () => of([] as TypeConges[]),
     );
   }
 
@@ -155,5 +177,19 @@ export class CongesService {
 
   private convertToDate(timestamp: firestore.Timestamp | null): Date | null {
     return timestamp === null ? null : timestamp.toDate();
+  }
+
+  private calculerCongesRestants(listeTypes: TypeConges[], listeConges: Conges[]): TypeConges[] {
+    return listeTypes.map((type) => ({ ...type, joursPoses: this.getNombreJours(type.key, listeConges) }));
+  }
+
+  private getNombreJours(key: string, listeConges: Conges[]): number {
+    console.log('key = ', key);
+    return listeConges
+      .map((conge) => conge.joursPris
+        .filter((j) => j.type === key)
+        .map((j) => j.nombreJours)
+        .reduce((a, b) => a + b, 0))
+      .reduce((a, b) => a + b, 0);
   }
 }
