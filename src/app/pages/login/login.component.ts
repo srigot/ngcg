@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Theme } from 'ngx-auth-firebaseui';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase';
+import { AuthService } from 'src/app/services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -10,17 +10,21 @@ import { auth } from 'firebase';
 })
 export class LoginComponent implements OnInit {
   themes = Theme;
-  constructor(public afAuth: AngularFireAuth) { }
+  user$: Observable<firebase.User>;
+
+  constructor(public authService: AuthService) {
+    this.user$ = this.authService.user;
+  }
 
   ngOnInit() {
   }
 
   login() {
-    this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
+    this.authService.login();
   }
 
   logout() {
-    this.afAuth.auth.signOut();
+    this.authService.logout();
   }
 
 }
