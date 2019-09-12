@@ -6,6 +6,7 @@ export interface TypeConges {
   dateFin: Date;
   nom: string;
   nombreJours: number;
+  joursPoses?: number;
 }
 
 export interface FirestoreTypeConges {

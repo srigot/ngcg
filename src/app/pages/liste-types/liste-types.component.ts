@@ -9,11 +9,11 @@ import { TypeConges } from 'src/app/models/type-conges';
   styleUrls: ['./liste-types.component.scss']
 })
 export class ListeTypesComponent implements OnInit {
-  displayedColumns: string[] = ['nom', 'dateDebut', 'dateFin', 'nombreJours', 'actions'];
+  displayedColumns: string[] = ['nom', 'dateDebut', 'dateFin', 'nombreJours', 'joursRestants', 'actions'];
   listeTypes: Observable<TypeConges[]>;
 
   constructor(congesService: CongesService) {
-    this.listeTypes = congesService.getAllTypes();
+    this.listeTypes = congesService.getAllTypesAvecRestant();
   }
 
   ngOnInit() {

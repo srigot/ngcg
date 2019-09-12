@@ -26,7 +26,7 @@
           </mat-form-field>
         </div>
       </div>
-      <div formArrayName="joursPris" *ngFor="let item of congeForm.get('joursPris').controls; let i = index;">
+      <div formArrayName="joursPris" *ngFor="let item of congeForm.get('joursPris')?.controls; let i = index;">
         <div class="row" [formGroupName]="i">
           <div class="col">
             <mat-form-field class="full-width">
@@ -42,7 +42,7 @@
           </div>
           <div class="col">
             <mat-form-field class="full-width">
-              <input number matInput placeholder="Nombre de jours" formControlName="nombreJours">
+              <input type="number" number matInput placeholder="Nombre de jours" formControlName="nombreJours">
               <mat-error *ngIf="item.controls['nombreJours'].hasError('required')">
                 Le nombre de jours est <strong>obligatoire</strong>
               </mat-error>

@@ -24,6 +24,11 @@
       <td mat-cell *matCellDef="let type"> {{ type.nombreJours }} </td>
     </ng-container>
 
+    <ng-container matColumnDef="joursRestants">
+      <th mat-header-cell *matHeaderCellDef>Jours restants</th>
+      <td mat-cell *matCellDef="let type"> {{ type.nombreJours - type.joursPoses }} </td>
+    </ng-container>
+
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let type">
@@ -35,6 +40,8 @@
 
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+      [ngClass]="{'terminee': row.joursPoses == row.nombreJours, 'incorrecte': row.joursPoses > row.nombreJours }">
+    </tr>
   </table>
 </div>
