@@ -9,6 +9,7 @@ export interface Conges {
     type: string,
     nombreJours: number,
   }];
+  eventId?: string;
 }
 
 export interface FirestoreConges {
@@ -18,4 +19,5 @@ export interface FirestoreConges {
     type: string,
     nombreJours: number,
   }];
+  eventId?: string;
 }

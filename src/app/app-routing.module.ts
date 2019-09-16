@@ -14,6 +14,10 @@ const routes: Routes = [
     path: 'types', ...canActivate(redirectUnauthorizedToLogin),
     loadChildren: () => import('./pages/liste-types/liste-types.module').then(mod => mod.ListeTypesModule)
   },
+  {
+    path: 'param', ...canActivate(redirectUnauthorizedToLogin),
+    loadChildren: () => import('./pages/parametrage/parametrage.module').then(mod => mod.ParametrageModule)
+  },
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/conges', pathMatch: 'full' },
 ];

@@ -141,6 +141,7 @@ export class CongesService {
       dateDebut: this.convertToDate(conge.dateDebut),
       dateFin: this.convertToDate(conge.dateFin),
       joursPris: conge.joursPris,
+      eventId: conge.eventId,
       key,
     };
   }
@@ -150,6 +151,7 @@ export class CongesService {
       dateDebut: this.convertToTimestamp(conge.dateDebut),
       dateFin: this.convertToTimestamp(conge.dateFin),
       joursPris: conge.joursPris,
+      eventId: conge.eventId,
     };
   }
 

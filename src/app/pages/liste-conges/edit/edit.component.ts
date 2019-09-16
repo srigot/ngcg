@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Conges } from 'src/app/models/conges';
+import { CalendarService } from 'src/app/services/calendar.service';
 
 @Component({
   selector: 'app-edit',
@@ -24,7 +25,9 @@ export class EditComponent implements OnInit, OnDestroy {
 
   listeTypesConges: TypeConges[];
 
-  constructor(private fb: FormBuilder, private congesServices: CongesService, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private fb: FormBuilder, private congesServices: CongesService, private router: Router, private route: ActivatedRoute,
+    private calendarService: CalendarService) { }
 
   ngOnInit(): void {
     this.congesServices.getAllTypes().pipe(untilDestroyed(this))
@@ -54,17 +57,30 @@ export class EditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    let retour: Promise<any>;
     const data: Conges = { ...this.congeForm.value, key: this.key };
     console.log(this.congeForm.value);
-    if (this.modeEdition) {
-      retour = this.congesServices.updateConge(data);
-    } else {
-      retour = this.congesServices.saveConges(data);
+    this.mettreAJourCalendrier(data)
+      .then((retour) => this.mettreAJourConge(data, retour))
+      .then(() => { this.retourListe(); });
+  }
+
+  private mettreAJourConge(data: Conges, retourCalendar): Promise<any> {
+    if (data.eventId == null && retourCalendar != null) {
+      data.eventId = retourCalendar.result.id;
     }
-    retour.then(() => {
-      this.retourListe();
-    });
+    if (this.modeEdition) {
+      return this.congesServices.updateConge(data);
+    } else {
+      return this.congesServices.saveConges(data);
+    }
+  }
+
+  private mettreAJourCalendrier(data: Conges): Promise<any> {
+    if (data.eventId === null) {
+      return this.calendarService.insertEvent(data);
+    } else {
+      return this.calendarService.updateEvent(data);
+    }
   }
 
   addType() {
