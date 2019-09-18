@@ -4,7 +4,7 @@ import { ListeCongesComponent } from '../liste-conges/liste-conges.component';
 import { RouterModule, Routes } from '@angular/router';
 import {
   MatTableModule, MatButtonModule, MatIconModule, MatPaginatorModule, MatSortModule, MatDatepickerModule,
-  MatNativeDateModule
+  MatDialogModule, MatSlideToggleModule
 } from '@angular/material';
 import { EditComponent } from './edit/edit.component';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +12,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from 'src/app/dialog/dialog.module';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 const routes: Routes = [
   { path: '', component: ListeCongesComponent },
@@ -38,7 +40,10 @@ const routes: Routes = [
     MatCardModule,
     ReactiveFormsModule,
     MatDatepickerModule,
-    MatNativeDateModule,
+    MatMomentDateModule,
+    MatDialogModule,
+    DialogModule,
+    MatSlideToggleModule,
   ],
   exports: [
     RouterModule,

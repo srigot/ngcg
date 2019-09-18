@@ -34,16 +34,14 @@ export class AuthService {
     });
   }
 
-  login() {
+  login(): Promise<auth.UserCredential> {
     const provider = new auth.GoogleAuthProvider();
     provider.addScope(SCOPE);
-    this.afAuth.auth.signInWithPopup(provider).then(() => {
-
-    });
+    return this.afAuth.auth.signInWithPopup(provider);
   }
 
-  logout() {
-    this.afAuth.auth.signOut();
+  logout(): Promise<void> {
+    return this.afAuth.auth.signOut();
   }
 
   get user(): Observable<firebase.User> {

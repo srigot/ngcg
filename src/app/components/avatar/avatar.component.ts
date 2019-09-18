@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-avatar',
@@ -10,11 +11,18 @@ import { Observable } from 'rxjs';
 export class AvatarComponent implements OnInit {
   user$: Observable<firebase.User>;
 
-  constructor(authService: AuthService) {
-    this.user$ = authService.user;
+  constructor(private authService: AuthService, private router: Router) {
+    this.user$ = this.authService.user;
   }
 
   ngOnInit() {
+  }
+
+  logout() {
+    this.authService.logout()
+      .then(() => {
+        this.router.navigate(['login']);
+      });
   }
 
 }

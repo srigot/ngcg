@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Theme } from 'ngx-auth-firebaseui';
 import { AuthService } from 'src/app/services/auth.service';
 import { Observable } from 'rxjs';
+import { CalendarService } from 'src/app/services/calendar.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -9,10 +10,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  themes = Theme;
   user$: Observable<firebase.User>;
 
-  constructor(public authService: AuthService) {
+  constructor(public authService: AuthService, private calendarService: CalendarService, private router: Router) {
     this.user$ = this.authService.user;
   }
 
@@ -20,11 +20,18 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.authService.login();
+    this.authService.login().then((user) => {
+      if (user) {
+        this.router.navigate(['conges']);
+      }
+    });
   }
 
   logout() {
     this.authService.logout();
   }
 
+  callCalendar() {
+    this.calendarService.getListeCalendrier();
+  }
 }

@@ -1,9 +1,10 @@
 import { firestore } from 'firebase';
+import { Moment } from 'moment';
 
 export interface TypeConges {
   key: string;
-  dateDebut: Date;
-  dateFin: Date;
+  dateDebut: Moment;
+  dateFin: Moment;
   nom: string;
   nombreJours: number;
   joursPoses?: number;

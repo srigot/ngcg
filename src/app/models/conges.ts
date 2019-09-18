@@ -1,15 +1,16 @@
 import { firestore } from 'firebase';
-import { DocumentReference } from '@angular/fire/firestore';
+import { Moment } from 'moment';
 
 export interface Conges {
   key: string;
-  dateDebut: Date;
-  dateFin: Date;
+  dateDebut: Moment;
+  dateFin: Moment;
   joursPris: [{
     type: string,
     nombreJours: number,
   }];
   eventId?: string;
+  previsionnel?: boolean;
 }
 
 export interface FirestoreConges {
@@ -20,4 +21,5 @@ export interface FirestoreConges {
     nombreJours: number,
   }];
   eventId?: string;
+  previsionnel?: boolean;
 }

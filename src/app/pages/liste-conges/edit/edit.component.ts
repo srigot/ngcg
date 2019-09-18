@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { CongesService } from 'src/app/services/conges.service';
 import { TypeConges } from 'src/app/models/type-conges';
-import { Observable } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Conges } from 'src/app/models/conges';
-import { CalendarService } from 'src/app/services/calendar.service';
+import { MatDialog } from '@angular/material';
+import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 
 @Component({
   selector: 'app-edit',
@@ -18,16 +18,18 @@ export class EditComponent implements OnInit, OnDestroy {
     dateDebut: [null, Validators.required],
     dateFin: [null, Validators.required],
     joursPris: this.fb.array([this.addLigneType()]),
+    previsionnel: [false],
   });
 
   private modeEdition = false;
   private key: string;
+  private eventId: string;
 
   listeTypesConges: TypeConges[];
 
   constructor(
     private fb: FormBuilder, private congesServices: CongesService, private router: Router, private route: ActivatedRoute,
-    private calendarService: CalendarService) { }
+    private dialog: MatDialog, private zone: NgZone) { }
 
   ngOnInit(): void {
     this.congesServices.getAllTypes().pipe(untilDestroyed(this))
@@ -38,6 +40,7 @@ export class EditComponent implements OnInit, OnDestroy {
       this.congesServices.getConge(this.key)
         .pipe(untilDestroyed(this))
         .subscribe(t => {
+          this.eventId = t.eventId;
           for (let lignes = 1; lignes < t.joursPris.length; lignes++) {
             this.addType();
           }
@@ -57,29 +60,39 @@ export class EditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    const data: Conges = { ...this.congeForm.value, key: this.key };
+    const data: Conges = { ...this.congeForm.value, key: this.key, eventId: this.eventId };
     console.log(this.congeForm.value);
-    this.mettreAJourCalendrier(data)
-      .then((retour) => this.mettreAJourConge(data, retour))
-      .then(() => { this.retourListe(); });
+    this.mettreAJourConge(data)
+      .then(() => {
+        this.zone.run(() => {
+          this.retourListe();
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
-  private mettreAJourConge(data: Conges, retourCalendar): Promise<any> {
-    if (data.eventId == null && retourCalendar != null) {
-      data.eventId = retourCalendar.result.id;
-    }
+  onDelete() {
+    const dialogRef = this.dialog.open(ConfirmComponent, {
+      width: '250px'
+    });
+    dialogRef.afterClosed().pipe(untilDestroyed(this))
+      .subscribe(result => {
+        if (result) {
+          this.congesServices.deleteConges(this.key).then(() => {
+            this.retourListe();
+          });
+        }
+      });
+
+  }
+
+  private mettreAJourConge(data: Conges): Promise<any> {
     if (this.modeEdition) {
-      return this.congesServices.updateConge(data);
+      return this.congesServices.updateCongeWithCalendar(data);
     } else {
-      return this.congesServices.saveConges(data);
-    }
-  }
-
-  private mettreAJourCalendrier(data: Conges): Promise<any> {
-    if (data.eventId === null) {
-      return this.calendarService.insertEvent(data);
-    } else {
-      return this.calendarService.updateEvent(data);
+      return this.congesServices.saveCongesWithCalendar(data);
     }
   }
 
@@ -100,5 +113,4 @@ export class EditComponent implements OnInit, OnDestroy {
   private retourListe() {
     this.router.navigate(['/conges']);
   }
-
 }

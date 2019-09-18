@@ -4,11 +4,12 @@ import { ListeTypesComponent } from './liste-types.component';
 import { Routes, RouterModule } from '@angular/router';
 import {
   MatTableModule, MatButtonModule, MatIconModule, MatInputModule, MatRadioModule, MatCardModule,
-  MatDatepickerModule, MatNativeDateModule
+  MatDatepickerModule
 } from '@angular/material';
 import { EditTypesComponent } from './edit-types/edit-types.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'src/app/dialog/dialog.module';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 
 const routes: Routes = [
@@ -29,7 +30,7 @@ const routes: Routes = [
     MatRadioModule,
     MatCardModule,
     MatDatepickerModule,
-    MatNativeDateModule,
+    MatMomentDateModule,
     ReactiveFormsModule,
     DialogModule,
   ],

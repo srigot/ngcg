@@ -6,6 +6,9 @@ import { map, switchMap } from 'rxjs/operators';
 import { TypeConges, FirestoreTypeConges } from '../models/type-conges';
 import { firestore } from 'firebase';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { CalendarService } from './calendar.service';
+import { Moment } from 'moment';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +20,7 @@ export class CongesService {
 
   private listeConges: Observable<Conges[]>;
 
-  constructor(private db: AngularFirestore, public afAuth: AngularFireAuth) {
+  constructor(private db: AngularFirestore, public afAuth: AngularFireAuth, private calendarService: CalendarService) {
     this.typesRef = db.collection('users/guest/types');
     this.congesRef = db.collection('users/guest/conges');
     this.afAuth.user.subscribe((user) => {
@@ -86,6 +89,22 @@ export class CongesService {
     return this.congesRef.add(this.congesToFirestore(conges));
   }
 
+  updateCongeWithCalendar(conges: Conges): Promise<void> {
+    return this.calendarService.mettreAJourCalendrier(conges)
+      .then((retourCalendar) => {
+        this.updateEventId(conges, retourCalendar);
+        return this.updateConge(conges);
+      });
+  }
+
+  saveCongesWithCalendar(conges: Conges): Promise<firestore.DocumentReference> {
+    return this.calendarService.mettreAJourCalendrier(conges)
+      .then((retourCalendar) => {
+        this.updateEventId(conges, retourCalendar);
+        return this.saveConges(conges);
+      });
+  }
+
   deleteConges(key: string): Promise<void> {
     return this.congesRef.doc(key).delete();
   }
@@ -142,6 +161,7 @@ export class CongesService {
       dateFin: this.convertToDate(conge.dateFin),
       joursPris: conge.joursPris,
       eventId: conge.eventId,
+      previsionnel: conge.previsionnel || null,
       key,
     };
   }
@@ -152,6 +172,7 @@ export class CongesService {
       dateFin: this.convertToTimestamp(conge.dateFin),
       joursPris: conge.joursPris,
       eventId: conge.eventId,
+      previsionnel: conge.previsionnel || null,
     };
   }
 
@@ -173,12 +194,12 @@ export class CongesService {
     };
   }
 
-  private convertToTimestamp(date: Date | null): firestore.Timestamp | null {
-    return date === null ? null : firestore.Timestamp.fromDate(date);
+  private convertToTimestamp(date: Moment | null): firestore.Timestamp | null {
+    return date === null ? null : firestore.Timestamp.fromDate(date.toDate());
   }
 
-  private convertToDate(timestamp: firestore.Timestamp | null): Date | null {
-    return timestamp === null ? null : timestamp.toDate();
+  private convertToDate(timestamp: firestore.Timestamp | null): Moment | null {
+    return timestamp === null ? null : moment(timestamp.toDate());
   }
 
   private calculerCongesRestants(listeTypes: TypeConges[], listeConges: Conges[]): TypeConges[] {
@@ -194,4 +215,11 @@ export class CongesService {
         .reduce((a, b) => a + b, 0))
       .reduce((a, b) => a + b, 0);
   }
+
+  private updateEventId(conges: Conges, retourCalendar: any) {
+    if ((conges.eventId === null || conges.eventId === undefined) && retourCalendar != null) {
+      conges.eventId = retourCalendar.result.id;
+    }
+  }
+
 }
