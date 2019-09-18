@@ -19,7 +19,7 @@ export class AuthService {
 
   private initClient() {
     gapi.load('client', () => {
-      console.log('loaded client')
+      console.log('loaded client');
 
       // It's OK to expose these credentials, they are client safe.
       gapi.client.init({
