@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CongesService } from 'src/app/services/conges.service';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { TypeConges } from 'src/app/models/type-conges';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 
 @Component({

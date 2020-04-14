@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListeTypesComponent } from './liste-types.component';
 import { Routes, RouterModule } from '@angular/router';
-import {
-  MatTableModule, MatButtonModule, MatIconModule, MatInputModule, MatRadioModule, MatCardModule,
-  MatDatepickerModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTableModule } from '@angular/material/table';
 import { EditTypesComponent } from './edit-types/edit-types.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'src/app/dialog/dialog.module';
