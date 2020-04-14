@@ -4,6 +4,9 @@ import * as moment from 'moment';
 
 declare var gapi: any;
 
+const CALENDAR_ID = 'primary';
+const COLOR_ID = '2';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,7 +15,7 @@ export class CalendarService {
   constructor() { }
 
   getListeCalendrier() {
-    gapi.client.calendar.events.list({ calendarId: 'primary' }).then((res) => {
+    gapi.client.calendar.events.list({ calendarId: CALENDAR_ID }).then((res) => {
       console.log(res);
     });
 
@@ -20,13 +23,13 @@ export class CalendarService {
 
   insertEvent(conge: Conges): Promise<any> {
     return gapi.client.calendar.events.insert({
-      calendarId: 'primary',
+      calendarId: CALENDAR_ID,
       ...this.getDatas(conge),
     });
   }
   updateEvent(conge: Conges): Promise<any> {
     return gapi.client.calendar.events.update({
-      calendarId: 'primary',
+      calendarId: CALENDAR_ID,
       eventId: conge.eventId,
       ...this.getDatas(conge),
     });
@@ -42,6 +45,7 @@ export class CalendarService {
         dateTime: dateFinPlusUn.toDate(),
       },
       summary: 'Congés' + (conge.previsionnel ? ' - prévisionnel' : ''),
+      colorId: COLOR_ID,
     };
   }
 
