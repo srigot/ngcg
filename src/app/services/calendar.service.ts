@@ -49,19 +49,20 @@ export class CalendarService {
     };
   }
 
-  mettreAJourCalendrier(data: Conges): Promise<any> {
+  async mettreAJourCalendrier(data: Conges): Promise<any> {
     if (data.eventId === null || data.eventId === undefined) {
       return this.insertEvent(data);
     } else {
-      return this.updateEvent(data)
-        .then((val) => Promise.resolve(val))
-        .catch((err) => {
-          if (err.status === 404) {
-            return this.insertEvent(data);
-          } else {
-            return Promise.reject(err);
-          }
-        });
+      try {
+        const val = await this.updateEvent(data);
+        return await Promise.resolve(val);
+      } catch (err) {
+        if (err.status === 404) {
+          return this.insertEvent(data);
+        } else {
+          return Promise.reject(err);
+        }
+      }
     }
   }
 

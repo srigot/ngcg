@@ -16,9 +16,6 @@ import * as moment from 'moment';
 export class CongesService {
   private typesRef: AngularFirestoreCollection<FirestoreTypeConges>;
   private congesRef: AngularFirestoreCollection<FirestoreConges>;
-  private userConnected: boolean;
-
-  private listeConges: Observable<Conges[]>;
 
   constructor(private db: AngularFirestore, public afAuth: AngularFireAuth, private calendarService: CalendarService) {
     this.typesRef = db.collection('users/guest/types');
@@ -27,9 +24,7 @@ export class CongesService {
       if (user !== null) {
         this.typesRef = db.collection('users/' + user.uid + '/types');
         this.congesRef = db.collection('users/' + user.uid + '/conges');
-        this.userConnected = true;
       } else {
-        this.userConnected = false;
         this.typesRef = db.collection('users/guest/types');
         this.congesRef = db.collection('users/guest/conges');
       }
@@ -130,7 +125,7 @@ export class CongesService {
 
   getAllTypesAvecRestant(): Observable<TypeConges[]> {
     return this.isUserConnected<TypeConges[]>(
-      (uid) => combineLatest(this.getAllTypesUser(uid), this.getAllCongesUser(uid)).pipe(
+      (uid) => combineLatest([this.getAllTypesUser(uid), this.getAllCongesUser(uid)]).pipe(
         map(([listeTypes, listeConges]) => this.calculerCongesRestants(listeTypes, listeConges)),
       ),
       () => of([] as TypeConges[]),
@@ -207,7 +202,6 @@ export class CongesService {
   }
 
   private getNombreJours(key: string, listeConges: Conges[]): number {
-    console.log('key = ', key);
     return listeConges
       .map((conge) => conge.joursPris
         .filter((j) => j.type === key)
