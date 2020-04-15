@@ -1,18 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
+import { Observable, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-
-export function getSettings(parametrageService: ParametrageService) {
-  return () => parametrageService.init();
-}
 
 @Injectable({
-  providedIn: 'root',
-  useFactory: getSettings,
+  providedIn: 'root'
 })
 export class ParametrageService {
-  params = {};
 
   constructor(
     private db: AngularFirestore,
@@ -20,24 +16,26 @@ export class ParametrageService {
   ) {
   }
   init() {
-    this.auth.user.subscribe((user) => {
-      if (user != null) {
-        this.db.doc('users/' + user.uid).get().subscribe((doc) => {
-          if (doc.exists) {
-            this.params = doc.data();
-          }
-        });
-      } else {
-        this.params = {};
-      }
-    });
-
   }
 
-  get showHistorique(): boolean {
-    if (this.params['showHistorique'] !== undefined) {
-      return this.params['showHistorique'];
+  getDocShowHistorique(uid: string) {
+    return this.db.collection('users/' + uid + '/params').doc('showHistorique');
+  }
+
+  getParamShowHistoriqueConnected(userId): Observable<boolean> {
+    return this.getDocShowHistorique(userId).valueChanges().pipe(
+      map((p: any) => p.valeur)
+    );
+  }
+
+  getParamShowHistorique(): Observable<boolean> {
+    return this.auth.isUserConnected(uid => this.getParamShowHistoriqueConnected(uid));
+  }
+
+  modifyParamShowHistorique(valeur: boolean) {
+    const uid = this.auth.connectedUserId;
+    if (uid != null) {
+      this.getDocShowHistorique(uid).update({ valeur });
     }
-    return true;
   }
 }

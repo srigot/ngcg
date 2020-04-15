@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ParametrageService } from '../../services/parametrage.service';
+import { ParametrageService } from 'src/app/services/parametrage.service';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-parametrage',
@@ -17,13 +18,21 @@ export class ParametrageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.parametrageForm.setValue({ showHistorique: this.parametrageService.showHistorique });
+    this.parametrageService.getParamShowHistorique().subscribe(
+      showHistorique => {
+        this.parametrageForm.setValue({ showHistorique });
+      }
+    );
   }
 
   ngOnDestroy(): void {
   }
 
-  onSubmit(): void {
+  onSubmit() {
 
+  }
+
+  showHistoriqueChange(event: MatSlideToggleChange) {
+    this.parametrageService.modifyParamShowHistorique(event.checked);
   }
 }

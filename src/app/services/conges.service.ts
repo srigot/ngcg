@@ -9,6 +9,7 @@ import { CalendarService } from './calendar.service';
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { AuthService } from './auth.service';
+import { ParametrageService } from './parametrage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,12 @@ export class CongesService {
   private typesRef: AngularFirestoreCollection<FirestoreTypeConges>;
   private congesRef: AngularFirestoreCollection<FirestoreConges>;
 
-  constructor(private db: AngularFirestore, public auth: AuthService, private calendarService: CalendarService) {
+  constructor(
+    private db: AngularFirestore,
+    public auth: AuthService,
+    private calendarService: CalendarService,
+    private parametrageService: ParametrageService,
+  ) {
     this.typesRef = db.collection('users/guest/types');
     this.congesRef = db.collection('users/guest/conges');
     this.auth.user.subscribe((user) => {
@@ -41,8 +47,7 @@ export class CongesService {
 
   getAllConges(): Observable<Conges[]> {
     return this.auth.isUserConnected<Conges[]>(
-      (uid) => this.getAllCongesUser(uid),
-      () => of([] as Conges[]),
+      (uid) => this.getAllCongesUser(uid)
     );
   }
 
@@ -94,20 +99,22 @@ export class CongesService {
 
   getAllTypes(): Observable<TypeConges[]> {
     return this.auth.isUserConnected<TypeConges[]>(
-      (uid) => this.getAllTypesUser(uid),
-      () => of([] as TypeConges[]),
+      (uid) => this.getAllTypesUser(uid)
     );
 
   }
   private getAllTypesUser(uid): Observable<TypeConges[]> {
-    return this.getTypesRef(uid).snapshotChanges().pipe(
-      map(actions => {
+    return combineLatest([
+      this.getTypesRef(uid).snapshotChanges(),
+      this.parametrageService.getParamShowHistoriqueConnected(uid),
+    ]).pipe(
+      map(([actions, showHistorique]) => {
         return actions.map(a => {
           const data = a.payload.doc.data() as FirestoreTypeConges;
           const key = a.payload.doc.id;
           return this.firestoreToTypeConges(key, data);
-        });
-      }),
+        }).filter(conge => showHistorique || (conge.dateDebut >= moment().startOf('year')));
+      })
     );
   }
 
@@ -115,8 +122,7 @@ export class CongesService {
     return this.auth.isUserConnected<TypeConges[]>(
       (uid) => combineLatest([this.getAllTypesUser(uid), this.getAllCongesUser(uid)]).pipe(
         map(([listeTypes, listeConges]) => this.calculerCongesRestants(listeTypes, listeConges)),
-      ),
-      () => of([] as TypeConges[]),
+      )
     );
   }
 

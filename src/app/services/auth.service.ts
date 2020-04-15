@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { switchMap } from 'rxjs/operators';
 
@@ -14,8 +14,14 @@ const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v
   providedIn: 'root'
 })
 export class AuthService {
+  connectedUserId: string = null;
+
   constructor(public afAuth: AngularFireAuth) {
     this.initClient();
+
+    this.user.subscribe(user => {
+      this.connectedUserId = user.uid;
+    });
   }
 
   private initClient() {
@@ -49,13 +55,13 @@ export class AuthService {
     return this.afAuth.user;
   }
 
-  public isUserConnected<T>(cbOK: (uid: string) => Observable<T>, cbKO: () => Observable<T>): Observable<T> {
+  public isUserConnected<T>(cbOK: (uid: string) => Observable<T>): Observable<T> {
     return this.afAuth.user.pipe(
       switchMap((user) => {
         if (user !== null) {
           return cbOK(user.uid);
         } else {
-          return cbKO();
+          throwError('Not Connected');
         }
       }),
     );
