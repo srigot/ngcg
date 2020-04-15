@@ -52,14 +52,18 @@ export class CongesService {
   }
 
   private getAllCongesUser(uid): Observable<Conges[]> {
-    return this.getCongesRef(uid).snapshotChanges().pipe(
-      map(actions => {
+    return combineLatest([
+      this.getCongesRef(uid).snapshotChanges(),
+      this.parametrageService.getParamShowHistoriqueConnected(uid)
+    ]).pipe(
+      map(([actions, showHistorique]) => {
         return actions.map(a => {
           const data = a.payload.doc.data() as FirestoreConges;
           const key = a.payload.doc.id;
           return this.firestoreToConges(key, data);
-        });
-      }),
+        })
+          .filter(conge => showHistorique || moment().startOf('year').isBefore(conge.dateDebut));
+      })
     );
   }
 
@@ -103,7 +107,7 @@ export class CongesService {
     );
 
   }
-  private getAllTypesUser(uid): Observable<TypeConges[]> {
+  private getAllTypesUser(uid: string): Observable<TypeConges[]> {
     return combineLatest([
       this.getTypesRef(uid).snapshotChanges(),
       this.parametrageService.getParamShowHistoriqueConnected(uid),
@@ -113,7 +117,7 @@ export class CongesService {
           const data = a.payload.doc.data() as FirestoreTypeConges;
           const key = a.payload.doc.id;
           return this.firestoreToTypeConges(key, data);
-        }).filter(conge => showHistorique || (conge.dateDebut >= moment().startOf('year')));
+        }).filter(conge => showHistorique || moment().isBefore(conge.dateFin));
       })
     );
   }
