@@ -1,13 +1,14 @@
-<div *ngIf="user$ | async as user; else showLogin">
+<div class="container-center" *ngIf="user$ | async as user; else showLogin">
   <span class="center">
     <h1>{{ user.displayName }}</h1>
     <button mat-stroked-button (click)="logout()">Se déconnecter</button>
   </span>
 </div>
-<ng-template style="justify-content: center" #showLogin>
-  <div class="center">
-    <button mat-stroked-button (click)="login()">Se connecter avec Google</button>
+<ng-template #showLogin>
+  <div class="container-center">
+    <div class="center">
+      <button mat-stroked-button (click)="login()">Se connecter avec Google
+      </button>
+    </div>
   </div>
 </ng-template>
-
-<button mat-stroked-button (click)="callCalendar()">Appel calendrier</button>
