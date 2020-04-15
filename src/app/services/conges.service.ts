@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable, combineLatest, of } from 'rxjs';
 import { Conges, FirestoreConges } from '../models/conges';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { TypeConges, FirestoreTypeConges } from '../models/type-conges';
 import { firestore } from 'firebase';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { CalendarService } from './calendar.service';
 import { Moment } from 'moment';
 import * as moment from 'moment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +17,10 @@ export class CongesService {
   private typesRef: AngularFirestoreCollection<FirestoreTypeConges>;
   private congesRef: AngularFirestoreCollection<FirestoreConges>;
 
-  constructor(private db: AngularFirestore, public afAuth: AngularFireAuth, private calendarService: CalendarService) {
+  constructor(private db: AngularFirestore, public auth: AuthService, private calendarService: CalendarService) {
     this.typesRef = db.collection('users/guest/types');
     this.congesRef = db.collection('users/guest/conges');
-    this.afAuth.user.subscribe((user) => {
+    this.auth.user.subscribe((user) => {
       if (user !== null) {
         this.typesRef = db.collection('users/' + user.uid + '/types');
         this.congesRef = db.collection('users/' + user.uid + '/conges');
@@ -39,20 +39,8 @@ export class CongesService {
     return this.db.collection('users/' + uid + '/types', ref => ref.orderBy('dateDebut'));
   }
 
-  private isUserConnected<T>(cbOK: (uid: string) => Observable<T>, cbKO: () => Observable<T>): Observable<T> {
-    return this.afAuth.user.pipe(
-      switchMap((user) => {
-        if (user !== null) {
-          return cbOK(user.uid);
-        } else {
-          return cbKO();
-        }
-      }),
-    );
-  }
-
   getAllConges(): Observable<Conges[]> {
-    return this.isUserConnected<Conges[]>(
+    return this.auth.isUserConnected<Conges[]>(
       (uid) => this.getAllCongesUser(uid),
       () => of([] as Conges[]),
     );
@@ -105,7 +93,7 @@ export class CongesService {
   }
 
   getAllTypes(): Observable<TypeConges[]> {
-    return this.isUserConnected<TypeConges[]>(
+    return this.auth.isUserConnected<TypeConges[]>(
       (uid) => this.getAllTypesUser(uid),
       () => of([] as TypeConges[]),
     );
@@ -124,7 +112,7 @@ export class CongesService {
   }
 
   getAllTypesAvecRestant(): Observable<TypeConges[]> {
-    return this.isUserConnected<TypeConges[]>(
+    return this.auth.isUserConnected<TypeConges[]>(
       (uid) => combineLatest([this.getAllTypesUser(uid), this.getAllCongesUser(uid)]).pipe(
         map(([listeTypes, listeConges]) => this.calculerCongesRestants(listeTypes, listeConges)),
       ),

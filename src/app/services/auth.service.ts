@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { switchMap } from 'rxjs/operators';
 
 declare var gapi: any;
 
@@ -46,5 +47,17 @@ export class AuthService {
 
   get user(): Observable<firebase.User> {
     return this.afAuth.user;
+  }
+
+  public isUserConnected<T>(cbOK: (uid: string) => Observable<T>, cbKO: () => Observable<T>): Observable<T> {
+    return this.afAuth.user.pipe(
+      switchMap((user) => {
+        if (user !== null) {
+          return cbOK(user.uid);
+        } else {
+          return cbKO();
+        }
+      }),
+    );
   }
 }
