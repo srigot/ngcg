@@ -20,7 +20,7 @@ export class EditTypesComponent implements OnInit, OnDestroy {
     nombreJours: [null, [Validators.required, Validators.min(1)]],
   });
 
-  private modeEdition = false;
+  public modeEdition = false;
   private key: string;
 
   constructor(
@@ -67,6 +67,10 @@ export class EditTypesComponent implements OnInit, OnDestroy {
           });
         }
       });
+  }
+
+  close() {
+    this.retourListe();
   }
 
   private isUrlModeEdition(): boolean {

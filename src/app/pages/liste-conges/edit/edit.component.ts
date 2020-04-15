@@ -21,7 +21,7 @@ export class EditComponent implements OnInit, OnDestroy {
     previsionnel: [false],
   });
 
-  private modeEdition = false;
+  public modeEdition = false;
   private key: string;
   private eventId: string;
 
@@ -85,7 +85,10 @@ export class EditComponent implements OnInit, OnDestroy {
           });
         }
       });
+  }
 
+  close() {
+    this.retourListe();
   }
 
   private mettreAJourConge(data: Conges): Promise<any> {

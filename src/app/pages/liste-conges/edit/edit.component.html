@@ -62,7 +62,8 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" type="submit">Valider</button>
-      <button mat-raised-button color="warn" type="button" (click)="onDelete()">Supprimer</button>
+      <button *ngIf="modeEdition" mat-raised-button color="warn" type="button" (click)="onDelete()">Supprimer</button>
+      <button *ngIf="!modeEdition" mat-raised-button color="warn" type="button" (click)="close()">Annuler</button>
     </mat-card-actions>
   </mat-card>
 </form>
