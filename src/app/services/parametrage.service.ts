@@ -24,7 +24,7 @@ export class ParametrageService {
 
   getParamShowHistoriqueConnected(userId): Observable<boolean> {
     return this.getDocShowHistorique(userId).valueChanges().pipe(
-      map((p: any) => p.valeur)
+      map((p: any) => (p === undefined) ? true : p.valeur)
     );
   }
 
@@ -35,7 +35,7 @@ export class ParametrageService {
   modifyParamShowHistorique(valeur: boolean) {
     const uid = this.auth.connectedUserId;
     if (uid != null) {
-      this.getDocShowHistorique(uid).update({ valeur });
+      this.getDocShowHistorique(uid).set({ valeur });
     }
   }
 }
