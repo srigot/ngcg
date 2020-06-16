@@ -62,7 +62,7 @@ export class CongesService {
           const key = a.payload.doc.id;
           return this.firestoreToConges(key, data);
         })
-          .filter(conge => showHistorique || moment().startOf('year').isBefore(conge.dateDebut));
+          .filter(conge => showHistorique || moment().startOf('year').isBefore(conge.dateFin));
       })
     );
   }
@@ -117,7 +117,7 @@ export class CongesService {
           const data = a.payload.doc.data() as FirestoreTypeConges;
           const key = a.payload.doc.id;
           return this.firestoreToTypeConges(key, data);
-        }).filter(conge => showHistorique || moment().isBefore(conge.dateFin));
+        }).filter(conge => showHistorique || moment().startOf('year').isBefore(conge.dateFin));
       })
     );
   }
