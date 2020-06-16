@@ -7,6 +7,8 @@ import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Conges } from 'src/app/models/conges';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
+import { combineLatest } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit',
@@ -32,7 +34,21 @@ export class EditComponent implements OnInit, OnDestroy {
     private dialog: MatDialog, private zone: NgZone) { }
 
   ngOnInit(): void {
-    this.congesServices.getAllTypes().pipe(untilDestroyed(this))
+    combineLatest(
+      [this.congeForm.get('dateDebut').valueChanges,
+      this.congeForm.get('dateFin').valueChanges,
+      this.congesServices.getAllTypes()]
+    ).pipe(
+      untilDestroyed(this),
+      map(([dateDebut, dateFin, listeConges]) => {
+        if (!dateDebut && !dateFin) {
+          return [];
+        } else {
+          return listeConges.filter(typeConge =>
+            typeConge.dateDebut.isSameOrBefore(dateFin) && typeConge.dateFin.isSameOrAfter(dateDebut));
+        }
+      })
+    )
       .subscribe(liste => { this.listeTypesConges = liste; });
     if (this.isUrlModeEdition()) {
       this.modeEdition = true;
