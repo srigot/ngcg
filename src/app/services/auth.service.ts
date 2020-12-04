@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { switchMap } from 'rxjs/operators';
+import firebase from 'firebase/app';
 
 declare var gapi: any;
 
@@ -41,14 +41,14 @@ export class AuthService {
     });
   }
 
-  login(): Promise<auth.UserCredential> {
-    const provider = new auth.GoogleAuthProvider();
+  login(): Promise<firebase.auth.UserCredential> {
+    const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope(SCOPE);
-    return this.afAuth.auth.signInWithPopup(provider);
+    return this.afAuth.signInWithPopup(provider);
   }
 
   logout(): Promise<void> {
-    return this.afAuth.auth.signOut();
+    return this.afAuth.signOut();
   }
 
   get user(): Observable<firebase.User> {
