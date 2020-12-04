@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Observable } from 'rxjs';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { Router } from '@angular/router';
+import firebase from 'firebase/app';
 
 @Component({
   selector: 'app-login',

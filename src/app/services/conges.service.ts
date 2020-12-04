@@ -4,7 +4,7 @@ import { Conges, FirestoreConges } from '../models/conges';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import { TypeConges, FirestoreTypeConges } from '../models/type-conges';
-import { firestore } from 'firebase';
+import firebase from 'firebase/app';
 import { CalendarService } from './calendar.service';
 import { Moment } from 'moment';
 import * as moment from 'moment';
@@ -77,7 +77,7 @@ export class CongesService {
     return this.congesRef.doc(conges.key).update(this.congesToFirestore(conges));
   }
 
-  saveConges(conges: Conges): Promise<firestore.DocumentReference> {
+  saveConges(conges: Conges): Promise<firebase.firestore.DocumentReference> {
     return this.congesRef.add(this.congesToFirestore(conges));
   }
 
@@ -89,7 +89,7 @@ export class CongesService {
       });
   }
 
-  saveCongesWithCalendar(conges: Conges): Promise<firestore.DocumentReference> {
+  saveCongesWithCalendar(conges: Conges): Promise<firebase.firestore.DocumentReference> {
     return this.calendarService.mettreAJourCalendrier(conges)
       .then((retourCalendar) => {
         this.updateEventId(conges, retourCalendar);
@@ -140,7 +140,7 @@ export class CongesService {
     return this.typesRef.doc(type.key).update(this.typeCongesToFirestore(type));
   }
 
-  saveType(type: TypeConges): Promise<firestore.DocumentReference> {
+  saveType(type: TypeConges): Promise<firebase.firestore.DocumentReference> {
     return this.typesRef.add(this.typeCongesToFirestore(type));
   }
 
@@ -187,11 +187,11 @@ export class CongesService {
     };
   }
 
-  private convertToTimestamp(date: Moment | null): firestore.Timestamp | null {
-    return date === null ? null : firestore.Timestamp.fromDate(date.toDate());
+  private convertToTimestamp(date: Moment | null): firebase.firestore.Timestamp | null {
+    return date === null ? null : firebase.firestore.Timestamp.fromDate(date.toDate());
   }
 
-  private convertToDate(timestamp: firestore.Timestamp | null): Moment | null {
+  private convertToDate(timestamp: firebase.firestore.Timestamp | null): Moment | null {
     return timestamp === null ? null : moment(timestamp.toDate());
   }
 

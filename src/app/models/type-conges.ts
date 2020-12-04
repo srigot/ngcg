@@ -1,4 +1,4 @@
-import { firestore } from 'firebase';
+import firebase from 'firebase/app';
 import { Moment } from 'moment';
 
 export interface TypeConges {
@@ -11,8 +11,8 @@ export interface TypeConges {
 }
 
 export interface FirestoreTypeConges {
-  dateDebut: firestore.Timestamp;
-  dateFin: firestore.Timestamp;
+  dateDebut: firebase.firestore.Timestamp;
+  dateFin: firebase.firestore.Timestamp;
   nom: string;
   nombreJours: number;
 }
