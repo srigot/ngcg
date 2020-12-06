@@ -8,6 +8,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 Il faut installer les clients suivants :
 * @angular/cli : `npm i -g @angular/cli`
 * firebasee : `npm i -g firebase-tools`
+* Créer le fichier `src/environment/firebase.ts` en ajoutant les infos dans la console firebase + clientId de la console Google
+  * Modifier le `domainAuth` par le nom de domaine utilisé.
 
 ### Charger les dépendances
 
