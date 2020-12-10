@@ -47,22 +47,29 @@ export class CongesService {
 
   getAllConges(): Observable<Conges[]> {
     return this.auth.isUserConnected<Conges[]>(
-      (uid) => this.getAllCongesUser(uid)
+      (uid) => this.getAllCongesUserFiltre(uid)
     );
   }
 
   private getAllCongesUser(uid): Observable<Conges[]> {
-    return combineLatest([
-      this.getCongesRef(uid).snapshotChanges(),
-      this.parametrageService.getParamShowHistoriqueConnected(uid)
-    ]).pipe(
-      map(([actions, showHistorique]) => {
+    return this.getCongesRef(uid).snapshotChanges().pipe(
+      map(actions => {
         return actions.map(a => {
           const data = a.payload.doc.data() as FirestoreConges;
           const key = a.payload.doc.id;
           return this.firestoreToConges(key, data);
         })
-          .filter(conge => showHistorique || moment().startOf('year').isBefore(conge.dateFin));
+      })
+    );
+  }
+
+  private getAllCongesUserFiltre(uid): Observable<Conges[]> {
+    return combineLatest([
+      this.getAllCongesUser(uid),
+      this.parametrageService.getParamShowHistoriqueConnected(uid)
+    ]).pipe(
+      map(([actions, showHistorique]) => {
+        return actions.filter(conge => showHistorique || moment().startOf('year').isBefore(conge.dateFin));
       })
     );
   }
