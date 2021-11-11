@@ -3,13 +3,14 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { CongesService } from 'src/app/services/conges.service';
 import { TypeConges } from 'src/app/models/type-conges';
 import { Router, ActivatedRoute } from '@angular/router';
-import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Conges } from 'src/app/models/conges';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 import { combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',

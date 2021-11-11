@@ -2,11 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CongesService } from 'src/app/services/conges.service';
-import { untilDestroyed } from 'ngx-take-until-destroy';
 import { TypeConges } from 'src/app/models/type-conges';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-edit-types',
   templateUrl: './edit-types.component.html',
