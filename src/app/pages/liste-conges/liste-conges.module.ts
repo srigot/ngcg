@@ -18,6 +18,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'src/app/dialog/dialog.module';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 const routes: Routes = [
   { path: '', component: ListeCongesComponent },
@@ -48,6 +49,7 @@ const routes: Routes = [
     MatDialogModule,
     DialogModule,
     MatSlideToggleModule,
+    FlexLayoutModule,
   ],
   exports: [
     RouterModule,

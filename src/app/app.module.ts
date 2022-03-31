@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, LOCALE_ID, APP_INITIALIZER } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +20,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
 import { ComponentsModule } from './components/components.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 registerLocaleData(localeFr, 'fr');
 
@@ -44,6 +45,7 @@ registerLocaleData(localeFr, 'fr');
     MatListModule,
     MatButtonModule,
     ComponentsModule,
+    FlexLayoutModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' },
