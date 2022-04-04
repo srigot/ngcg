@@ -7,8 +7,9 @@ import { Conges } from 'src/app/models/conges';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 import { combineLatest } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TypesService } from 'src/app/services/types.service';
 
 @UntilDestroy()
 @Component({
@@ -31,14 +32,18 @@ export class EditComponent implements OnInit, OnDestroy {
   listeTypesConges: TypeConges[];
 
   constructor(
-    private fb: FormBuilder, private congesServices: CongesService, private router: Router, private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private congesServices: CongesService,
+    private typesServices: TypesService,
+    private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog, private zone: NgZone) { }
 
   ngOnInit(): void {
     combineLatest(
       [this.congeForm.get('dateDebut').valueChanges,
       this.congeForm.get('dateFin').valueChanges,
-      this.congesServices.getAllTypes()]
+      this.typesServices.getAllTypes()]
     ).pipe(
       untilDestroyed(this),
       map(([dateDebut, dateFin, listeConges]) => {

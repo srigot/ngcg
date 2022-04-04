@@ -3,7 +3,7 @@
 </button>
 
 <div class="mat-elevation-z8">
-  <table mat-table class="full-width-table" [dataSource]="listeTypes">
+  <table mat-table class="full-width-table" [dataSource]="listeTypes$">
     <ng-container matColumnDef="nom">
       <th mat-header-cell *matHeaderCellDef>Nom</th>
       <td mat-cell *matCellDef="let type"> {{ type.nom }} </td>

@@ -6,6 +6,7 @@ import { TypeConges } from 'src/app/models/type-conges';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TypesService } from 'src/app/services/types.service';
 
 @UntilDestroy()
 @Component({
@@ -25,14 +26,14 @@ export class EditTypesComponent implements OnInit, OnDestroy {
   private key: string;
 
   constructor(
-    private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private congesService: CongesService,
+    private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private typesServices: TypesService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
     if (this.isUrlModeEdition()) {
       this.modeEdition = true;
       this.key = this.route.snapshot.params.id;
-      this.congesService.getType(this.key)
+      this.typesServices.getType(this.key)
         .pipe(untilDestroyed(this))
         .subscribe(t => {
           this.typeForm.patchValue(t);
@@ -47,9 +48,9 @@ export class EditTypesComponent implements OnInit, OnDestroy {
     const data: TypeConges = { ...this.typeForm.value, key: this.key };
     console.log(this.typeForm.value);
     if (this.modeEdition) {
-      retour = this.congesService.updateType(data);
+      retour = this.typesServices.updateType(data);
     } else {
-      retour = this.congesService.saveType(data);
+      retour = this.typesServices.saveType(data);
     }
     retour.then(() => {
       this.retourListe();
@@ -63,7 +64,7 @@ export class EditTypesComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().pipe(untilDestroyed(this))
       .subscribe(result => {
         if (result) {
-          this.congesService.deleteType(this.key).then(() => {
+          this.typesServices.deleteType(this.key).then(() => {
             this.retourListe();
           });
         }

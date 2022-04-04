@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CongesService } from 'src/app/services/conges.service';
 import { Observable } from 'rxjs';
 import { TypeConges } from 'src/app/models/type-conges';
+import { TypesService } from 'src/app/services/types.service';
 
 @Component({
   selector: 'app-liste-types',
@@ -10,10 +10,9 @@ import { TypeConges } from 'src/app/models/type-conges';
 })
 export class ListeTypesComponent implements OnInit {
   displayedColumns: string[] = ['nom', 'dateDebut', 'dateFin', 'nombreJours', 'joursRestants', 'actions'];
-  listeTypes: Observable<TypeConges[]>;
+  listeTypes$: Observable<TypeConges[]> = this.typesServices.getTypesAvecRestantFiltres();
 
-  constructor(congesService: CongesService) {
-    this.listeTypes = congesService.getAllTypesAvecRestant();
+  constructor(private typesServices: TypesService) {
   }
 
   ngOnInit() {
