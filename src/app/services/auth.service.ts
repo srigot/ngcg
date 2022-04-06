@@ -14,14 +14,9 @@ const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v
   providedIn: 'root'
 })
 export class AuthService {
-  connectedUserId: string = null;
 
   constructor(public afAuth: AngularFireAuth) {
     this.initClient();
-
-    this.user.subscribe(user => {
-      this.connectedUserId = user.uid;
-    });
   }
 
   private initClient() {
@@ -51,19 +46,7 @@ export class AuthService {
     return this.afAuth.signOut();
   }
 
-  get user(): Observable<firebase.User> {
+  get user$(): Observable<firebase.User> {
     return this.afAuth.user;
-  }
-
-  public isUserConnected<T>(cbOK: (uid: string) => Observable<T>): Observable<T> {
-    return this.afAuth.user.pipe(
-      switchMap((user) => {
-        if (user !== null) {
-          return cbOK(user.uid);
-        } else {
-          throwError('Not Connected');
-        }
-      }),
-    );
   }
 }

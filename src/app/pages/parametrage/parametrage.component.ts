@@ -18,7 +18,7 @@ export class ParametrageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.parametrageService.getParamShowHistorique().subscribe(
+    this.parametrageService.showHistorique$.subscribe(
       showHistorique => {
         this.parametrageForm.setValue({ showHistorique });
       }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 
@@ -10,26 +10,33 @@ import { map } from 'rxjs/operators';
 })
 export class ParametrageService {
   private _showHistoriqueSubject$ = new BehaviorSubject(true);
+  private _docShowHistorique: AngularFirestoreDocument<unknown>;
+  private docSubscription: Subscription = null;
 
   constructor(
     private db: AngularFirestore,
     public auth: AuthService,
   ) {
-    this.auth.isUserConnected(uid => this.getParamShowHistoriqueConnected(uid))
-      .subscribe(value => this._showHistoriqueSubject$.next(value));
+    this.auth.user$.subscribe(user => {
+      if (user !== null) {
+        this._docShowHistorique = this.db.collection('users/' + user.uid + '/params').doc('showHistorique');
+        this.docSubscription = this._getParamShowHistoriqueConnected().subscribe(value =>
+          this._showHistoriqueSubject$.next(value));
+      } else {
+        this._docShowHistorique = null;
+        this._showHistoriqueSubject$.next(true);
+        this.docSubscription?.unsubscribe();
+      }
+    });
   }
 
-  private _getDocShowHistorique(uid: string) {
-    return this.db.collection('users/' + uid + '/params').doc('showHistorique');
-  }
-
-  getParamShowHistoriqueConnected(userId): Observable<boolean> {
-    return this._getDocShowHistorique(userId).valueChanges().pipe(
+  private _getParamShowHistoriqueConnected(): Observable<boolean> {
+    return this._docShowHistorique.valueChanges().pipe(
       map((p: any) => (p === undefined) ? true : p.valeur)
     );
   }
 
-  getParamShowHistorique(): Observable<boolean> {
+  get showHistorique$(): Observable<boolean> {
     return this._showHistoriqueSubject$;
   }
 
@@ -38,9 +45,6 @@ export class ParametrageService {
   }
 
   modifyParamShowHistorique(valeur: boolean) {
-    const uid = this.auth.connectedUserId;
-    if (uid != null) {
-      this._getDocShowHistorique(uid).set({ valeur });
-    }
+    this._docShowHistorique.set({ valeur });
   }
 }

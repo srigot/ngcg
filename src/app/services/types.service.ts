@@ -24,7 +24,7 @@ export class TypesService {
     private _parametrageService: ParametrageService,
     private _congesServices: CongesService,
   ) {
-    this.auth.user.subscribe((user) => {
+    this.auth.user$.subscribe((user) => {
       if (user !== null) {
         this._typesRef = this._db.collection('users/' + user.uid + '/types');
         this._subscribeData(user.uid);

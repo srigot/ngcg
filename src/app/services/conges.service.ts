@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { Conges, FirestoreConges } from '../models/conges';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
@@ -15,8 +15,8 @@ import { convertToDate, convertToTimestamp } from '../helpers/types-converters';
 })
 export class CongesService {
   private congesRef: AngularFirestoreCollection<FirestoreConges>;
-
   private _congesSubject = new BehaviorSubject<Conges[]>([]);
+  private _subscription: Subscription = null;
 
   constructor(
     private db: AngularFirestore,
@@ -24,19 +24,20 @@ export class CongesService {
     private calendarService: CalendarService,
     private parametrageService: ParametrageService,
   ) {
-    this.auth.user.subscribe((user) => {
+    this.auth.user$.subscribe((user) => {
       if (user !== null) {
         this.congesRef = db.collection('users/' + user.uid + '/conges');
-        this._subscribeData(user.uid);
+        this._subscription = this._subscribeData(user.uid);
       } else {
         this.congesRef = null;
         this._congesSubject.next([]);
+        this._subscription?.unsubscribe();
       }
     });
   }
 
-  private _subscribeData(uid): void {
-    this._getCongesRef(uid).snapshotChanges().subscribe(actions => {
+  private _subscribeData(uid): Subscription {
+    return this._getCongesRef(uid).snapshotChanges().subscribe(actions => {
       this._congesSubject.next(actions.map(a => {
         const data = a.payload.doc.data() as FirestoreConges;
         const key = a.payload.doc.id;

@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   user$: Observable<firebase.User>;
 
   constructor(public authService: AuthService, private calendarService: CalendarService, private router: Router) {
-    this.user$ = this.authService.user;
+    this.user$ = this.authService.user$;
   }
 
   ngOnInit() {

@@ -29,9 +29,9 @@
           </div>
         </div>
         <div formArrayName="joursPris" *ngFor="let item of congeForm.get('joursPris')?.controls; let i = index;">
-          <div fxLayout="row" fxLayout.gt-xs="row" fxLayoutGap.gt-xs="10px" [formGroupName]="i">
+          <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.gt-xs="10px" [formGroupName]="i">
             <div fxFlex>
-              <mat-form-field>
+              <mat-form-field class="full-width">
                 <mat-select placeholder="Type de congés" formControlName="type"
                   [disabled]="!listeTypesConges|| listeTypesConges.length < 1">
                   <mat-option *ngFor="let type of listeTypesConges" [value]="type.key">

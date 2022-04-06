@@ -13,7 +13,7 @@ export class AvatarComponent implements OnInit {
   user$: Observable<firebase.User>;
 
   constructor(private authService: AuthService, private router: Router) {
-    this.user$ = this.authService.user;
+    this.user$ = this.authService.user$;
   }
 
   ngOnInit() {
