@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ParametrageService } from 'src/app/services/parametrage.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
@@ -13,7 +13,7 @@ export class ParametrageComponent implements OnInit, OnDestroy {
     showHistorique: [null],
   });
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private parametrageService: ParametrageService,
   ) { }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormGroup, UntypedFormArray } from '@angular/forms';
 import { CongesService } from 'src/app/services/conges.service';
 import { TypeConges } from 'src/app/models/type-conges';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -32,7 +32,7 @@ export class EditComponent implements OnInit, OnDestroy {
   listeTypesConges: TypeConges[];
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private congesServices: CongesService,
     private typesServices: TypesService,
     private router: Router,
@@ -74,7 +74,7 @@ export class EditComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void { }
 
 
-  addLigneType(): FormGroup {
+  addLigneType(): UntypedFormGroup {
     return this.fb.group({
       type: [null, Validators.required],
       nombreJours: [null, Validators.required],
@@ -122,12 +122,12 @@ export class EditComponent implements OnInit, OnDestroy {
   }
 
   addType() {
-    const typesConges = this.congeForm.get('joursPris') as FormArray;
+    const typesConges = this.congeForm.get('joursPris') as UntypedFormArray;
     typesConges.push(this.addLigneType());
   }
 
   deleteType(i: number) {
-    const typesConges = this.congeForm.get('joursPris') as FormArray;
+    const typesConges = this.congeForm.get('joursPris') as UntypedFormArray;
     typesConges.removeAt(i);
   }
 

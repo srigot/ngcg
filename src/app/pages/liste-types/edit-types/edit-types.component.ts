@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CongesService } from 'src/app/services/conges.service';
 import { TypeConges } from 'src/app/models/type-conges';
@@ -26,7 +26,7 @@ export class EditTypesComponent implements OnInit, OnDestroy {
   private key: string;
 
   constructor(
-    private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private typesServices: TypesService,
+    private fb: UntypedFormBuilder, private route: ActivatedRoute, private router: Router, private typesServices: TypesService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
