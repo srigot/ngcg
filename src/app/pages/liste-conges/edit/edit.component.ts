@@ -1,14 +1,15 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { UntypedFormBuilder, Validators, UntypedFormGroup, UntypedFormArray } from '@angular/forms';
-import { CongesService } from 'src/app/services/conges.service';
-import { TypeConges } from 'src/app/models/type-conges';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Conges } from 'src/app/models/conges';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
-import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Moment } from 'moment';
+import { combineLatest } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
+import { Conges } from 'src/app/models/conges';
+import { TypeConges } from 'src/app/models/type-conges';
+import { CongesService } from 'src/app/services/conges.service';
 import { TypesService } from 'src/app/services/types.service';
 
 @UntilDestroy()
@@ -17,12 +18,15 @@ import { TypesService } from 'src/app/services/types.service';
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss']
 })
-export class EditComponent implements OnInit, OnDestroy {
-  congeForm = this.fb.group({
-    dateDebut: [null, Validators.required],
-    dateFin: [null, Validators.required],
-    joursPris: this.fb.array([this.addLigneType()]),
-    previsionnel: [false],
+export class EditComponent implements OnInit {
+  congeForm = new FormGroup({
+    dateDebut: new FormControl<Moment>(null, [Validators.required]),
+    dateFin: new FormControl<Moment>(null, [Validators.required]),
+    joursPris: new FormArray<FormGroup<{
+      type: FormControl<string>;
+      nombreJours: FormControl<number>
+    }>>([this.addLigneType()]),
+    previsionnel: new FormControl<boolean>(false),
   });
 
   public modeEdition = false;
@@ -32,7 +36,6 @@ export class EditComponent implements OnInit, OnDestroy {
   listeTypesConges: TypeConges[];
 
   constructor(
-    private fb: UntypedFormBuilder,
     private congesServices: CongesService,
     private typesServices: TypesService,
     private router: Router,
@@ -43,7 +46,7 @@ export class EditComponent implements OnInit, OnDestroy {
     combineLatest(
       [this.congeForm.get('dateDebut').valueChanges,
       this.congeForm.get('dateFin').valueChanges,
-      this.typesServices.getAllTypes()]
+      this.typesServices.getTypesAvecRestantFiltres()]
     ).pipe(
       untilDestroyed(this),
       map(([dateDebut, dateFin, listeConges]) => {
@@ -60,10 +63,11 @@ export class EditComponent implements OnInit, OnDestroy {
       this.modeEdition = true;
       this.key = this.route.snapshot.params.id;
       this.congesServices.getConge(this.key)
-        .pipe(untilDestroyed(this))
+        .pipe(untilDestroyed(this),
+        filter(value => !!value))
         .subscribe(t => {
           this.eventId = t.eventId;
-          for (let lignes = 1; lignes < t.joursPris.length; lignes++) {
+          for (let lignes = this.congeForm.controls.joursPris.length; lignes < t.joursPris.length; lignes++) {
             this.addType();
           }
           this.congeForm.patchValue(t);
@@ -71,19 +75,18 @@ export class EditComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void { }
-
-
-  addLigneType(): UntypedFormGroup {
-    return this.fb.group({
-      type: [null, Validators.required],
-      nombreJours: [null, Validators.required],
+  addLigneType() {
+    return new FormGroup({
+      type: new FormControl<string>(null, Validators.required),
+      nombreJours: new FormControl<number>(null, Validators.required),
     });
   }
 
   onSubmit() {
-    const data: Conges = { ...this.congeForm.value, key: this.key, eventId: this.eventId };
-    console.log(this.congeForm.value);
+    if (this.congeForm.invalid) {
+      return;
+    }
+    const data: Conges = { ...this.congeForm.getRawValue(), key: this.key, eventId: this.eventId };
     this.mettreAJourConge(data)
       .then(() => {
         this.zone.run(() => {
@@ -91,13 +94,13 @@ export class EditComponent implements OnInit, OnDestroy {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   }
 
   onDelete() {
     const dialogRef = this.dialog.open(ConfirmComponent, {
-      width: '250px'
+      width: '40em'
     });
     dialogRef.afterClosed().pipe(untilDestroyed(this))
       .subscribe(result => {
@@ -122,12 +125,12 @@ export class EditComponent implements OnInit, OnDestroy {
   }
 
   addType() {
-    const typesConges = this.congeForm.get('joursPris') as UntypedFormArray;
+    const typesConges = this.congeForm.controls.joursPris;
     typesConges.push(this.addLigneType());
   }
 
   deleteType(i: number) {
-    const typesConges = this.congeForm.get('joursPris') as UntypedFormArray;
+    const typesConges = this.congeForm.controls.joursPris;
     typesConges.removeAt(i);
   }
 

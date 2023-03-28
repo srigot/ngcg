@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Auth, GoogleAuthProvider, signInWithPopup, signOut, user, User, UserCredential } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-declare var gapi: any;
+declare let gapi: any;
 
 const SCOPE = 'https://www.googleapis.com/auth/calendar';
 const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'];
@@ -40,7 +39,6 @@ export class AuthService {
   login(): Promise<UserCredential> {
     const provider = new GoogleAuthProvider();
     provider.addScope(SCOPE);
-    console.log('start login');
     return signInWithPopup(this._auth, provider);
   }
 

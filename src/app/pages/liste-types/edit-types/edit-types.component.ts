@@ -1,11 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CongesService } from 'src/app/services/conges.service';
-import { TypeConges } from 'src/app/models/type-conges';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
+import { TypeConges } from 'src/app/models/type-conges';
 import { TypesService } from 'src/app/services/types.service';
 
 @UntilDestroy()
@@ -14,7 +13,7 @@ import { TypesService } from 'src/app/services/types.service';
   templateUrl: './edit-types.component.html',
   styleUrls: ['./edit-types.component.scss']
 })
-export class EditTypesComponent implements OnInit, OnDestroy {
+export class EditTypesComponent implements OnInit {
   typeForm = this.fb.group({
     dateDebut: [null],
     dateFin: [null],
@@ -41,12 +40,9 @@ export class EditTypesComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void { }
-
   onSubmit() {
     let retour: Promise<any>;
     const data: TypeConges = { ...this.typeForm.value, key: this.key };
-    console.log(this.typeForm.value);
     if (this.modeEdition) {
       retour = this.typesServices.updateType(data);
     } else {

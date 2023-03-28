@@ -1,71 +1,61 @@
 <form [formGroup]="congeForm" novalidate (ngSubmit)="onSubmit()">
-  <mat-card appearance="outlined" class="shipping-card">
-    <mat-card-header>
-      <mat-card-title>Congé</mat-card-title>
+  <app-default-page titre="Congés">
+    <ng-container header>
       <mat-slide-toggle formControlName="previsionnel">Prévisionnel</mat-slide-toggle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="container">
-        <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.gt-xs="10px">
+    </ng-container>
+    <ng-container>
+      <div class="row">
+        <mat-form-field>
+          <input matInput [matDatepicker]="dateDebutPicker" placeholder="Date de début" formControlName="dateDebut">
+          <mat-datepicker-toggle matSuffix [for]="dateDebutPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dateDebutPicker></mat-datepicker>
+          <mat-error *ngIf="congeForm.controls['dateDebut'].hasError('required')">
+            La date de début est <strong>obligatoire</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="dateFinPicker" placeholder="Date de fin" formControlName="dateFin">
+          <mat-datepicker-toggle matSuffix [for]="dateFinPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dateFinPicker></mat-datepicker>
+          <mat-error *ngIf="congeForm.controls['dateFin'].hasError('required')">
+            La date de fin est <strong>obligatoire</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div formArrayName="joursPris" *ngFor="let item of congeForm.get('joursPris')?.controls; let i = index;">
+        <div class="row" [formGroupName]="i">
+          <mat-form-field class="flex-auto">
+            <mat-select placeholder="Type de congés" formControlName="type"
+              [disabled]="!listeTypesConges|| listeTypesConges.length < 1">
+              <mat-option *ngFor="let type of listeTypesConges" [value]="type.key">
+                {{ type.nom }} <small>- (Restant : {{type.nombreJours - type.joursPoses}})</small>
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="item.controls['type'].hasError('required')">
+              Le type de congés est <strong>obligatoire</strong>
+            </mat-error>
+          </mat-form-field>
           <div>
             <mat-form-field>
-              <input matInput [matDatepicker]="dateDebutPicker" placeholder="Date de début" formControlName="dateDebut">
-              <mat-datepicker-toggle matSuffix [for]="dateDebutPicker"></mat-datepicker-toggle>
-              <mat-datepicker #dateDebutPicker></mat-datepicker>
-              <mat-error *ngIf="congeForm.controls['dateDebut'].hasError('required')">
-                La date de début est <strong>obligatoire</strong>
+              <input type="number" number matInput placeholder="Nombre de jours" formControlName="nombreJours">
+              <mat-error *ngIf="item.controls['nombreJours'].hasError('required')">
+                Le nombre de jours est <strong>obligatoire</strong>
               </mat-error>
             </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field>
-              <input matInput [matDatepicker]="dateFinPicker" placeholder="Date de fin" formControlName="dateFin">
-              <mat-datepicker-toggle matSuffix [for]="dateFinPicker"></mat-datepicker-toggle>
-              <mat-datepicker #dateFinPicker></mat-datepicker>
-              <mat-error *ngIf="congeForm.controls['dateFin'].hasError('required')">
-                La date de fin est <strong>obligatoire</strong>
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-        <div formArrayName="joursPris" *ngFor="let item of congeForm.get('joursPris')?.controls; let i = index;">
-          <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.gt-xs="10px" [formGroupName]="i">
-            <div fxFlex>
-              <mat-form-field class="full-width">
-                <mat-select placeholder="Type de congés" formControlName="type"
-                  [disabled]="!listeTypesConges|| listeTypesConges.length < 1">
-                  <mat-option *ngFor="let type of listeTypesConges" [value]="type.key">
-                    {{ type.nom }}
-                  </mat-option>
-                </mat-select>
-                <mat-error *ngIf="item.controls['type'].hasError('required')">
-                  Le type de congés est <strong>obligatoire</strong>
-                </mat-error>
-              </mat-form-field>
-            </div>
-            <div fxFlex>
-              <mat-form-field>
-                <input type="number" number matInput placeholder="Nombre de jours" formControlName="nombreJours">
-                <mat-error *ngIf="item.controls['nombreJours'].hasError('required')">
-                  Le nombre de jours est <strong>obligatoire</strong>
-                </mat-error>
-              </mat-form-field>
-
-              <button *ngIf="i == 0" mat-icon-button arial-label="Ajouter type" type="button" (click)="addType()">
-                <mat-icon>add</mat-icon>
-              </button>
-              <button *ngIf="i > 0" mat-icon-button arial-label="Supprimer type" type="button" (click)="deleteType(i)">
-                <mat-icon>clear</mat-icon>
-              </button>
-            </div>
+            <button *ngIf="i == 0" mat-icon-button arial-label="Ajouter type" type="button" (click)="addType()">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button *ngIf="i > 0" mat-icon-button arial-label="Supprimer type" type="button" (click)="deleteType(i)">
+              <mat-icon>clear</mat-icon>
+            </button>
           </div>
         </div>
       </div>
-    </mat-card-content>
-    <mat-card-actions>
+    </ng-container>
+    <ng-container actions>
       <button mat-raised-button color="primary" type="submit">Valider</button>
       <button *ngIf="modeEdition" mat-raised-button color="warn" type="button" (click)="onDelete()">Supprimer</button>
       <button *ngIf="!modeEdition" mat-raised-button color="warn" type="button" (click)="close()">Annuler</button>
-    </mat-card-actions>
-  </mat-card>
+    </ng-container>
+  </app-default-page>
 </form>

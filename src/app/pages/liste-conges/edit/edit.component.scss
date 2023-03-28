@@ -2,13 +2,16 @@
   width: 100%;
 }
 
-.shipping-card {
-  min-width: 120px;
-  margin: 20px auto;
+.flex-auto {
+  flex: auto;
 }
 
-.mat-mdc-radio-button {
-  display: block;
-  margin: 5px 0;
-}
+.row {
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
 
+  mat-form-field {
+    margin-right: 1em;
+  }
+}

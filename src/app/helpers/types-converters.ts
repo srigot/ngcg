@@ -1,4 +1,4 @@
-import { Timestamp, WithFieldValue } from '@angular/fire/firestore';
+import { Timestamp } from '@angular/fire/firestore';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 

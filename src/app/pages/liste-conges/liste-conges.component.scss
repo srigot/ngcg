@@ -1,4 +1,6 @@
-@use '@angular/material'as mat;
+@use '@angular/material' as mat;
+
+$my-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
 
 .full-width-table {
   width: 100%;
@@ -11,5 +13,5 @@
 }
 
 .prev {
-  background-color: mat.get-color-from-palette(mat.$teal-palette, 100);
+  background-color: mat.get-color-from-palette($my-accent, 100);
 }

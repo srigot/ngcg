@@ -1,0 +1,10 @@
+mat-card-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+mat-card-actions {
+    ::ng-deep button:not(:first-child) {
+        margin-left: 10px;
+    }
+}

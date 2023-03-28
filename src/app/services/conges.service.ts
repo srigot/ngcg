@@ -3,7 +3,7 @@ import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { convertToDate } from '../helpers/types-converters';
+import { convertToDate, convertToTimestamp } from '../helpers/types-converters';
 import { Conges } from '../models/conges';
 import { AuthService } from './auth.service';
 import { CalendarService } from './calendar.service';
@@ -20,8 +20,8 @@ export class CongesService {
   private _converter: FirestoreDataConverter<Conges> = {
     toFirestore(conge: WithFieldValue<Conges>): DocumentData {
       return {
-        dateDebut: conge.dateDebut,
-        dateFin: conge.dateFin,
+        dateDebut: convertToTimestamp(conge.dateDebut as moment.Moment),
+        dateFin: convertToTimestamp(conge.dateFin as moment.Moment),
         joursPris: conge.joursPris,
         eventId: conge.eventId,
         previsionnel: conge.previsionnel || null,

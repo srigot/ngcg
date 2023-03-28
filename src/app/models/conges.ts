@@ -5,10 +5,10 @@ export interface Conges {
   key: string;
   dateDebut: Moment;
   dateFin: Moment;
-  joursPris: [{
+  joursPris: {
     type: string,
     nombreJours: number,
-  }];
+  }[];
   eventId?: string;
   previsionnel?: boolean;
 }
