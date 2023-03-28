@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ParametrageComponent } from './parametrage.component';
 import { RouterModule, Routes } from '@angular/router';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatListModule } from '@angular/material/list';
 import { ReactiveFormsModule } from '@angular/forms';
 
 const route: Routes = [

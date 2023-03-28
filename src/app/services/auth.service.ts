@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable, throwError } from 'rxjs';
+import { Auth, GoogleAuthProvider, signInWithPopup, signOut, user, User, UserCredential } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { switchMap } from 'rxjs/operators';
-import firebase from 'firebase/app';
 
 declare var gapi: any;
 
@@ -15,7 +14,9 @@ const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v
 })
 export class AuthService {
 
-  constructor(public afAuth: AngularFireAuth) {
+  constructor(
+    private _auth: Auth,
+  ) {
     this.initClient();
   }
 
@@ -36,17 +37,18 @@ export class AuthService {
     });
   }
 
-  login(): Promise<firebase.auth.UserCredential> {
-    const provider = new firebase.auth.GoogleAuthProvider();
+  login(): Promise<UserCredential> {
+    const provider = new GoogleAuthProvider();
     provider.addScope(SCOPE);
-    return this.afAuth.signInWithPopup(provider);
+    console.log('start login');
+    return signInWithPopup(this._auth, provider);
   }
 
   logout(): Promise<void> {
-    return this.afAuth.signOut();
+    return signOut(this._auth);
   }
 
-  get user$(): Observable<firebase.User> {
-    return this.afAuth.user;
+  get user$(): Observable<User> {
+    return user(this._auth);
   }
 }

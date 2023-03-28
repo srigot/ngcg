@@ -1,55 +1,59 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { Conges, FirestoreConges } from '../models/conges';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { map } from 'rxjs/operators';
-import firebase from 'firebase/app';
-import { CalendarService } from './calendar.service';
+import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, DocumentReference, Firestore, FirestoreDataConverter, orderBy, query, updateDoc, WithFieldValue } from '@angular/fire/firestore';
 import * as moment from 'moment';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { convertToDate } from '../helpers/types-converters';
+import { Conges } from '../models/conges';
 import { AuthService } from './auth.service';
+import { CalendarService } from './calendar.service';
 import { ParametrageService } from './parametrage.service';
-import { convertToDate, convertToTimestamp } from '../helpers/types-converters';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CongesService {
-  private congesRef: AngularFirestoreCollection<FirestoreConges>;
+  private congesRef: CollectionReference<DocumentData>;
   private _congesSubject = new BehaviorSubject<Conges[]>([]);
   private _subscription: Subscription = null;
 
+  private _converter: FirestoreDataConverter<Conges> = {
+    toFirestore(conge: WithFieldValue<Conges>): DocumentData {
+      return {
+        dateDebut: conge.dateDebut,
+        dateFin: conge.dateFin,
+        joursPris: conge.joursPris,
+        eventId: conge.eventId,
+        previsionnel: conge.previsionnel || null,
+      }
+    },
+    fromFirestore(snapshot, options): Conges {
+      const data = snapshot.data(options);
+      return {
+        dateDebut: convertToDate(data.dateDebut),
+        dateFin: convertToDate(data.dateFin),
+        joursPris: data.joursPris,
+        eventId: data.eventId,
+        previsionnel: data.previsionnel || null,
+        key: data.key,
+      }
+    }
+  }
+
   constructor(
-    private db: AngularFirestore,
+    private _firestore: Firestore,
     public auth: AuthService,
     private calendarService: CalendarService,
     private parametrageService: ParametrageService,
   ) {
-    this.auth.user$.subscribe((user) => {
-      if (user !== null) {
-        this.congesRef = db.collection('users/' + user.uid + '/conges');
-        this._subscription = this._subscribeData(user.uid);
-      } else {
-        this.congesRef = null;
-        this._congesSubject.next([]);
-        this._subscription?.unsubscribe();
-      }
-    });
+    this.auth.user$.pipe(
+      tap(user => {
+        this.congesRef = user ? collection(this._firestore, 'users/' + user.uid + '/conges').withConverter(this._converter) : null;
+      }), switchMap(user => {
+        return (user ? collectionData(query(this.congesRef, orderBy('dateDebut')), { idField: 'key' }) : of([])) as Observable<Conges[]>;
+      }),
+    ).subscribe(conges => { this._congesSubject.next(conges); });
   }
-
-  private _subscribeData(uid): Subscription {
-    return this._getCongesRef(uid).snapshotChanges().subscribe(actions => {
-      this._congesSubject.next(actions.map(a => {
-        const data = a.payload.doc.data() as FirestoreConges;
-        const key = a.payload.doc.id;
-        return this.firestoreToConges(key, data);
-      }))
-    });
-  }
-
-  private _getCongesRef(uid: string): AngularFirestoreCollection<FirestoreConges> {
-    return this.db.collection('users/' + uid + '/conges', ref => ref.orderBy('dateDebut'));
-  }
-
 
   public getAllConges(): Observable<Conges[]> {
     return this._congesSubject.pipe(
@@ -62,17 +66,18 @@ export class CongesService {
   }
 
   getConge(key: string): Observable<Conges> {
-    return this.congesRef.doc<FirestoreConges>(key).valueChanges().pipe(
-      map(conge => this.firestoreToConges(key, conge)),
+    return this._congesSubject.pipe(
+      map(conges => conges.find(c => c.key === key))
     );
   }
 
   updateConge(conges: Conges): Promise<void> {
-    return this.congesRef.doc(conges.key).update(this.congesToFirestore(conges));
+    const refDoc = doc(this.congesRef, conges.key).withConverter(this._converter);
+    return updateDoc(refDoc, this._converter.toFirestore(conges));
   }
 
-  saveConges(conges: Conges): Promise<firebase.firestore.DocumentReference> {
-    return this.congesRef.add(this.congesToFirestore(conges));
+  saveConges(conges: Conges): Promise<DocumentReference<DocumentData>> {
+    return addDoc(this.congesRef, this._converter.toFirestore(conges));
   }
 
   updateCongeWithCalendar(conges: Conges): Promise<void> {
@@ -83,7 +88,7 @@ export class CongesService {
       });
   }
 
-  saveCongesWithCalendar(conges: Conges): Promise<firebase.firestore.DocumentReference> {
+  saveCongesWithCalendar(conges: Conges): Promise<DocumentReference<DocumentData>> {
     return this.calendarService.mettreAJourCalendrier(conges)
       .then((retourCalendar) => {
         this.updateEventId(conges, retourCalendar);
@@ -92,34 +97,9 @@ export class CongesService {
   }
 
   deleteConges(key: string): Promise<void> {
-    return this.congesRef.doc(key).delete();
+    const refDoc = doc(this.congesRef, key).withConverter(this._converter);
+    return deleteDoc(refDoc);
   }
-
-
-
-  private firestoreToConges(key: string, conge: FirestoreConges): Conges {
-    return {
-      dateDebut: convertToDate(conge.dateDebut),
-      dateFin: convertToDate(conge.dateFin),
-      joursPris: conge.joursPris,
-      eventId: conge.eventId,
-      previsionnel: conge.previsionnel || null,
-      key,
-    };
-  }
-
-  private congesToFirestore(conge: Conges): FirestoreConges {
-    return {
-      dateDebut: convertToTimestamp(conge.dateDebut),
-      dateFin: convertToTimestamp(conge.dateFin),
-      joursPris: conge.joursPris,
-      eventId: conge.eventId,
-      previsionnel: conge.previsionnel || null,
-    };
-  }
-
-
-
 
   private updateEventId(conges: Conges, retourCalendar: any) {
     if ((conges.eventId === null || conges.eventId === undefined) && retourCalendar != null) {

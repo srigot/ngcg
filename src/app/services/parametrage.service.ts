@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { doc, DocumentReference, Firestore, onSnapshot, setDoc } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AuthService } from './auth.service';
-import { BehaviorSubject, Observable, Subscription, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -10,18 +9,22 @@ import { map } from 'rxjs/operators';
 })
 export class ParametrageService {
   private _showHistoriqueSubject$ = new BehaviorSubject(true);
-  private _docShowHistorique: AngularFirestoreDocument<unknown>;
+  private _docShowHistorique: DocumentReference<unknown>;
   private docSubscription: Subscription = null;
 
   constructor(
-    private db: AngularFirestore,
     public auth: AuthService,
+    private _firestore: Firestore,
   ) {
     this.auth.user$.subscribe(user => {
       if (user !== null) {
-        this._docShowHistorique = this.db.collection('users/' + user.uid + '/params').doc('showHistorique');
-        this.docSubscription = this._getParamShowHistoriqueConnected().subscribe(value =>
-          this._showHistoriqueSubject$.next(value));
+        this._docShowHistorique = doc(this._firestore, 'users/' + user.uid + '/params/showHistorique');
+        onSnapshot(this._docShowHistorique, {
+          next: (snapshot) => {
+            const value = snapshot.data() as { valeur: boolean };
+            this._showHistoriqueSubject$.next(value === undefined ? false : value.valeur);
+          }
+        });
       } else {
         this._docShowHistorique = null;
         this._showHistoriqueSubject$.next(true);
@@ -30,11 +33,6 @@ export class ParametrageService {
     });
   }
 
-  private _getParamShowHistoriqueConnected(): Observable<boolean> {
-    return this._docShowHistorique.valueChanges().pipe(
-      map((p: any) => (p === undefined) ? true : p.valeur)
-    );
-  }
 
   get showHistorique$(): Observable<boolean> {
     return this._showHistoriqueSubject$;
@@ -45,6 +43,6 @@ export class ParametrageService {
   }
 
   modifyParamShowHistorique(valeur: boolean) {
-    this._docShowHistorique.set({ valeur });
+    setDoc(this._docShowHistorique, { valeur });
   }
 }

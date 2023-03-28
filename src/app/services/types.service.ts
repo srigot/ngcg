@@ -1,52 +1,56 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, Firestore, FirestoreDataConverter, orderBy, query, updateDoc, WithFieldValue } from '@angular/fire/firestore';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { convertToDate, convertToTimestamp } from '../helpers/types-converters';
-import { FirestoreTypeConges, TypeConges } from '../models/type-conges';
-import { AuthService } from './auth.service';
-import { ParametrageService } from './parametrage.service';
-import firebase from 'firebase/app';
-import { CongesService } from './conges.service';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { convertToDate } from '../helpers/types-converters';
 import { Conges } from '../models/conges';
+import { TypeConges } from '../models/type-conges';
+import { AuthService } from './auth.service';
+import { CongesService } from './conges.service';
+import { ParametrageService } from './parametrage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TypesService {
-  private _typesRef: AngularFirestoreCollection<FirestoreTypeConges> = null;
+  private _typesRef: CollectionReference<DocumentData>;
+  private _types$?: Observable<DocumentData[]>;
   private _typesSubject = new BehaviorSubject<TypeConges[]>([]);
+  private _converter: FirestoreDataConverter<TypeConges> = {
+    toFirestore(type: WithFieldValue<TypeConges>): DocumentData {
+      return {
+        dateDebut: type.dateDebut,
+        dateFin: type.dateFin,
+        nom: type.nom,
+        nombreJours: type.nombreJours,
+      };
+    },
+    fromFirestore(snapshot, options) {
+      const data = snapshot.data(options);
+      return {
+        dateDebut: convertToDate(data.dateDebut),
+        dateFin: convertToDate(data.dateFin),
+        nom: data.nom,
+        nombreJours: data.nombreJours,
+        key: data.key,
+      };
 
+    },
+  }
   constructor(
-    private _db: AngularFirestore,
+    private _firestore: Firestore,
     public auth: AuthService,
     private _parametrageService: ParametrageService,
     private _congesServices: CongesService,
   ) {
-    this.auth.user$.subscribe((user) => {
-      if (user !== null) {
-        this._typesRef = this._db.collection('users/' + user.uid + '/types');
-        this._subscribeData(user.uid);
-      } else {
-        this._typesRef = null;
-        this._typesSubject.next([]);
-      }
-    });
-  }
-
-  private _subscribeData(uid: string): void {
-    this._getTypesRef(uid).snapshotChanges().subscribe(actions => {
-      this._typesSubject.next(actions.map(a => {
-        const data = a.payload.doc.data() as FirestoreTypeConges;
-        const key = a.payload.doc.id;
-        return this.firestoreToTypeConges(key, data);
-      }));
-    });
-  }
-
-  private _getTypesRef(uid: string): AngularFirestoreCollection<FirestoreTypeConges> {
-    return this._db.collection('users/' + uid + '/types', ref => ref.orderBy('dateDebut'));
+    this.auth.user$.pipe(
+      tap(user => {
+        this._typesRef = user ? collection(this._firestore, 'users/' + user.uid + '/types').withConverter(this._converter) : null;
+      }), switchMap(user => {
+        return (user ? collectionData(query(this._typesRef, orderBy('dateDebut')), { idField: 'key' }) : of([])) as Observable<TypeConges[]>;
+      }),
+    ).subscribe(types => { this._typesSubject.next(types); });
   }
 
   getAllTypes(): Observable<TypeConges[]> {
@@ -63,40 +67,25 @@ export class TypesService {
   }
 
   getType(key: string): Observable<TypeConges> {
-    return this._typesRef.doc<FirestoreTypeConges>(key).valueChanges().pipe(
-      map(type => this.firestoreToTypeConges(key, type)),
+    return this._typesSubject.pipe(
+      map(types => types.find(c => c.key === key))
     );
   }
 
   updateType(type: TypeConges): Promise<void> {
-    return this._typesRef.doc(type.key).update(this.typeCongesToFirestore(type));
+    const refDoc = doc(this._typesRef, type.key).withConverter(this._converter);
+    return updateDoc(refDoc, this._converter.toFirestore(type));
   }
 
-  saveType(type: TypeConges): Promise<firebase.firestore.DocumentReference> {
-    return this._typesRef.add(this.typeCongesToFirestore(type));
+  saveType(type: TypeConges) {
+    return addDoc(this._typesRef, this._converter.toFirestore(type));
   }
 
   deleteType(key: string): Promise<void> {
-    return this._typesRef.doc(key).delete();
+    const refDoc = doc(this._typesRef, key).withConverter(this._converter);
+    return deleteDoc(refDoc);
   }
 
-  private firestoreToTypeConges(key: string, typeConges: FirestoreTypeConges): TypeConges {
-    return {
-      dateDebut: convertToDate(typeConges.dateDebut),
-      dateFin: convertToDate(typeConges.dateFin),
-      nom: typeConges.nom,
-      nombreJours: typeConges.nombreJours,
-      key,
-    };
-  }
-  private typeCongesToFirestore(type: TypeConges): FirestoreTypeConges {
-    return {
-      dateDebut: convertToTimestamp(type.dateDebut),
-      dateFin: convertToTimestamp(type.dateFin),
-      nom: type.nom,
-      nombreJours: type.nombreJours,
-    };
-  }
   private calculerCongesRestants(listeTypes: TypeConges[], listeConges: Conges[]): TypeConges[] {
     return listeTypes.map((type) => ({ ...type, joursPoses: this.getNombreJours(type.key, listeConges) }));
   }

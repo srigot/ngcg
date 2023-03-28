@@ -3,7 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CongesService } from 'src/app/services/conges.service';
 import { TypeConges } from 'src/app/models/type-conges';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TypesService } from 'src/app/services/types.service';

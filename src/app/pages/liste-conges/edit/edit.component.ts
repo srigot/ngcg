@@ -4,7 +4,7 @@ import { CongesService } from 'src/app/services/conges.service';
 import { TypeConges } from 'src/app/models/type-conges';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Conges } from 'src/app/models/conges';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';

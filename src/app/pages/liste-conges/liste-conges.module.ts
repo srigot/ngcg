@@ -1,24 +1,23 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ListeCongesComponent } from '../liste-conges/liste-conges.component';
-import { RouterModule, Routes } from '@angular/router';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { MatSortModule } from '@angular/material/sort';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { EditComponent } from './edit/edit.component';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from 'src/app/dialog/dialog.module';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { RouterModule, Routes } from '@angular/router';
+import { DialogModule } from 'src/app/dialog/dialog.module';
+import { ListeCongesComponent } from '../liste-conges/liste-conges.component';
+import { EditComponent } from './edit/edit.component';
 
 const routes: Routes = [
   { path: '', component: ListeCongesComponent },
@@ -49,7 +48,6 @@ const routes: Routes = [
     MatDialogModule,
     DialogModule,
     MatSlideToggleModule,
-    FlexLayoutModule,
   ],
   exports: [
     RouterModule,

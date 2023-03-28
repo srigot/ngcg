@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Conges } from '../models/conges';
 import * as moment from 'moment';
 
-declare var gapi: any;
+declare const gapi: any;
 
 const CALENDAR_ID = 'primary';
 const COLOR_ID = '2';
@@ -11,8 +11,6 @@ const COLOR_ID = '2';
   providedIn: 'root'
 })
 export class CalendarService {
-
-  constructor() { }
 
   getListeCalendrier() {
     gapi.client.calendar.events.list({ calendarId: CALENDAR_ID }).then((res) => {

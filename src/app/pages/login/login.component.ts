@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
-import { Observable } from 'rxjs';
-import { CalendarService } from 'src/app/services/calendar.service';
+import { User } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import firebase from 'firebase/app';
+import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { CalendarService } from 'src/app/services/calendar.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +11,7 @@ import firebase from 'firebase/app';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  user$: Observable<firebase.User>;
+  user$: Observable<User>;
 
   constructor(public authService: AuthService, private calendarService: CalendarService, private router: Router) {
     this.user$ = this.authService.user$;
@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.authService.login().then((user) => {
+      console.log('user', user);
       if (user) {
         this.router.navigate(['conges']);
       }
