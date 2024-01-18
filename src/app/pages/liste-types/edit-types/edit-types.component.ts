@@ -3,6 +3,8 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 import { TypeConges } from 'src/app/models/type-conges';
 import { TypesService } from 'src/app/services/types.service';
@@ -37,6 +39,10 @@ export class EditTypesComponent implements OnInit {
         .subscribe(t => {
           this.typeForm.patchValue(t);
         });
+    } else {
+      this.typeForm.controls.dateDebut.valueChanges
+        .pipe(untilDestroyed(this))
+        .subscribe((value) => this._calculerDateFin(value));
     }
   }
 
@@ -79,4 +85,10 @@ export class EditTypesComponent implements OnInit {
     this.router.navigate(['/types']);
   }
 
+  private _calculerDateFin(value: Moment): void {
+    if (value.isValid()) {
+      const newDateFin = moment(value).add(12, 'months').subtract(1, 'day');
+      this.typeForm.patchValue({ dateFin: newDateFin });
+    }
+  }
 }
