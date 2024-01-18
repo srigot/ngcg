@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
-import firebase from 'firebase/app';
 import { User } from '@angular/fire/auth';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-avatar',
@@ -18,6 +17,7 @@ export class AvatarComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Nothing
   }
 
   logout() {

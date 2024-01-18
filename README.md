@@ -38,4 +38,4 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 ## Déploiement
 
-Run `npm run deploy` pour déployer sur Firebase Hosting
+Run `ng deploy` pour déployer sur Firebase Hosting

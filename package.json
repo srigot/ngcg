@@ -8,7 +8,6 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build --configuration production && firebase deploy",
     "postinstall": "ngcc"
   },
   "private": true,
@@ -26,9 +25,7 @@
     "@angular/platform-browser-dynamic": "^15.2.4",
     "@angular/router": "^15.2.4",
     "@ngneat/until-destroy": "^8.1.4",
-    "firebase": "^8.10.1",
-    "firestore": "^1.1.6",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

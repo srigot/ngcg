@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "mescg-3237d"
+  },
+  "targets": {
+    "mescg-3237d": {
+      "hosting": {
+        "ngcg": [
+          "mescg-3237d"
+        ]
+      }
+    }
   }
 }
