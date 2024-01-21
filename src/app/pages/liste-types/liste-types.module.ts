@@ -8,6 +8,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule, Routes } from '@angular/router';
 import { DialogModule } from 'src/app/dialog/dialog.module';
@@ -35,6 +36,7 @@ const routes: Routes = [
     MatCardModule,
     MatDatepickerModule,
     MatMomentDateModule,
+    MatSlideToggleModule,
     ReactiveFormsModule,
     DialogModule,
     TemplatesModule,

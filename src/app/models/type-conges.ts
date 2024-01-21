@@ -7,6 +7,7 @@ export interface TypeConges {
   dateFin: Moment;
   nom: string;
   nombreJours: number;
+  anticipable: boolean;
   joursPoses?: number;
 }
 
@@ -15,4 +16,5 @@ export interface FirestoreTypeConges {
   dateFin: Timestamp;
   nom: string;
   nombreJours: number;
+  anticipable?: boolean;
 }

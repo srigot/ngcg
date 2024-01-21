@@ -53,18 +53,20 @@ export class EditComponent implements OnInit {
         if (!dateDebut && !dateFin) {
           return [];
         } else {
-          return listeConges.filter(typeConge =>
-            typeConge.dateDebut.isSameOrBefore(dateFin) && typeConge.dateFin.isSameOrAfter(dateDebut));
+          return listeConges.filter(typeConge => {
+            const dateDebutType = typeConge.anticipable ? typeConge.dateDebut.subtract(1, 'year') : typeConge.dateDebut;
+            return dateDebutType.isSameOrBefore(dateFin) && typeConge.dateFin.isSameOrAfter(dateDebut);
+          });
         }
       })
-    )
-      .subscribe(liste => { this.listeTypesConges = liste; });
+    ).subscribe(liste => { this.listeTypesConges = liste; });
+
     if (this.isUrlModeEdition()) {
       this.modeEdition = true;
       this.key = this.route.snapshot.params.id;
       this.congesServices.getConge(this.key)
         .pipe(untilDestroyed(this),
-        filter(value => !!value))
+          filter(value => !!value))
         .subscribe(t => {
           this.eventId = t.eventId;
           for (let lignes = this.congeForm.controls.joursPris.length; lignes < t.joursPris.length; lignes++) {

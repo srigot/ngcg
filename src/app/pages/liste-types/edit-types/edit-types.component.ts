@@ -20,6 +20,7 @@ export class EditTypesComponent implements OnInit {
     dateDebut: [null],
     dateFin: [null],
     nom: [null, Validators.required],
+    anticipable: [false],
     nombreJours: [null, [Validators.required, Validators.min(1)]],
   });
 
