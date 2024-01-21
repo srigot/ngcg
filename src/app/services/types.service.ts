@@ -24,6 +24,7 @@ export class TypesService {
         dateFin: convertToTimestamp(type.dateFin as moment.Moment),
         nom: type.nom,
         nombreJours: type.nombreJours,
+        anticipable: type.anticipable,
       };
     },
     fromFirestore(snapshot, options) {
@@ -33,6 +34,7 @@ export class TypesService {
         dateFin: convertToDate(data.dateFin),
         nom: data.nom,
         nombreJours: data.nombreJours,
+        anticipable: data.anticipable ?? false,
         key: data.key,
       };
 

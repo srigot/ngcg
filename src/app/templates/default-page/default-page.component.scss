@@ -4,6 +4,8 @@ mat-card-header {
 }
 
 mat-card-actions {
+    margin-top: 1em;
+    margin-bottom: 1em;
     ::ng-deep button:not(:first-child) {
         margin-left: 10px;
     }
