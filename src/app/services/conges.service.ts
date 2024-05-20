@@ -104,6 +104,8 @@ export class CongesService {
   private updateEventId(conges: Conges, retourCalendar: any) {
     if ((conges.eventId === null || conges.eventId === undefined) && retourCalendar != null) {
       conges.eventId = retourCalendar.result.id;
+    } else {
+      conges.eventId = null;
     }
   }
 

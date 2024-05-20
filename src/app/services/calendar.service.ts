@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Conges } from '../models/conges';
 import * as moment from 'moment';
+import { Conges } from '../models/conges';
 
 declare const gapi: any;
 
@@ -48,6 +48,9 @@ export class CalendarService {
   }
 
   async mettreAJourCalendrier(data: Conges): Promise<any> {
+    // FIXME Temprairement desactive
+    return Promise.resolve(null);
+
     if (data.eventId === null || data.eventId === undefined) {
       return this.insertEvent(data);
     } else {
