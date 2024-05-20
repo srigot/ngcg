@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
-import { ParametrageService } from 'src/app/services/parametrage.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { ParametrageService } from 'src/app/services/parametrage.service';
 
 @Component({
   selector: 'app-parametrage',
   templateUrl: './parametrage.component.html',
   styleUrls: ['./parametrage.component.scss']
 })
-export class ParametrageComponent implements OnInit, OnDestroy {
+export class ParametrageComponent implements OnInit {
   parametrageForm = this.fb.group({
     showHistorique: [null],
   });
@@ -25,11 +25,8 @@ export class ParametrageComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-  }
-
   onSubmit() {
-
+    // DO NOTHING
   }
 
   showHistoriqueChange(event: MatSlideToggleChange) {
