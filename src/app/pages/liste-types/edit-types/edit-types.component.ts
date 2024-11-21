@@ -3,7 +3,7 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Moment } from 'moment';
 import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 import { TypeConges } from 'src/app/models/type-conges';

@@ -1,5 +1,5 @@
 import { Timestamp } from '@angular/fire/firestore';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Moment } from 'moment';
 
 export const convertToTimestamp = (date: Moment | null): Timestamp | null => {

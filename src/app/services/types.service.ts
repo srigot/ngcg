@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, Firestore, FirestoreDataConverter, orderBy, query, updateDoc, WithFieldValue } from '@angular/fire/firestore';
-import * as moment from 'moment';
+import moment from 'moment';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { convertToDate, convertToTimestamp } from '../helpers/types-converters';
