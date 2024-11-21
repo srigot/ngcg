@@ -48,9 +48,6 @@ export class CalendarService {
   }
 
   async mettreAJourCalendrier(data: Conges): Promise<any> {
-    // FIXME Temprairement desactive
-    return Promise.resolve(null);
-
     if (data.eventId === null || data.eventId === undefined) {
       return this.insertEvent(data);
     } else {
