@@ -17,8 +17,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ComponentsModule } from './components/components.module';
 import { LoginComponent } from './pages/login/login.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
 
 registerLocaleData(localeFr, 'fr');
 
@@ -38,7 +38,7 @@ registerLocaleData(localeFr, 'fr');
     MatSidenavModule,
     MatListModule,
     MatButtonModule,
-    ComponentsModule,
+    AvatarComponent,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' },
