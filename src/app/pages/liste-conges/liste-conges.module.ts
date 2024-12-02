@@ -15,10 +15,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule, Routes } from '@angular/router';
-import { DialogModule } from 'src/app/dialog/dialog.module';
 import { TemplatesModule } from 'src/app/templates/templates.module';
 import { ListeCongesComponent } from '../liste-conges/liste-conges.component';
 import { EditComponent } from './edit/edit.component';
+import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 
 const routes: Routes = [
   { path: '', component: ListeCongesComponent },
@@ -47,7 +47,7 @@ const routes: Routes = [
     MatDatepickerModule,
     MatMomentDateModule,
     MatDialogModule,
-    DialogModule,
+    ConfirmComponent,
     MatSlideToggleModule,
     TemplatesModule,
   ],

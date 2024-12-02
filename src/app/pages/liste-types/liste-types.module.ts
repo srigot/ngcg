@@ -11,10 +11,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule, Routes } from '@angular/router';
-import { DialogModule } from 'src/app/dialog/dialog.module';
 import { TemplatesModule } from 'src/app/templates/templates.module';
 import { EditTypesComponent } from './edit-types/edit-types.component';
 import { ListeTypesComponent } from './liste-types.component';
+import { ConfirmComponent } from 'src/app/dialog/confirm/confirm.component';
 
 
 const routes: Routes = [
@@ -38,7 +38,7 @@ const routes: Routes = [
     MatMomentDateModule,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    DialogModule,
+    ConfirmComponent,
     TemplatesModule,
   ],
   exports: [

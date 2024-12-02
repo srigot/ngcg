@@ -1,7 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-confirm',
+  standalone: true,
+  imports: [CommonModule,
+    MatDialogModule,
+    MatButtonModule,],
   templateUrl: './confirm.component.html',
   styleUrls: ['./confirm.component.scss']
 })
