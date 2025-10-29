@@ -4,9 +4,10 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ParametrageService } from 'src/app/services/parametrage.service';
 
 @Component({
-  selector: 'app-parametrage',
-  templateUrl: './parametrage.component.html',
-  styleUrls: ['./parametrage.component.scss']
+    selector: 'app-parametrage',
+    templateUrl: './parametrage.component.html',
+    styleUrls: ['./parametrage.component.scss'],
+    standalone: false
 })
 export class ParametrageComponent implements OnInit {
   parametrageForm = this.fb.group({

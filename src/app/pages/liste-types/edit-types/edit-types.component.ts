@@ -11,9 +11,10 @@ import { TypesService } from 'src/app/services/types.service';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-edit-types',
-  templateUrl: './edit-types.component.html',
-  styleUrls: ['./edit-types.component.scss']
+    selector: 'app-edit-types',
+    templateUrl: './edit-types.component.html',
+    styleUrls: ['./edit-types.component.scss'],
+    standalone: false
 })
 export class EditTypesComponent implements OnInit {
   typeForm = this.fb.group({

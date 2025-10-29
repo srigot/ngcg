@@ -4,13 +4,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-confirm',
-  standalone: true,
-  imports: [CommonModule,
-    MatDialogModule,
-    MatButtonModule,],
-  templateUrl: './confirm.component.html',
-  styleUrls: ['./confirm.component.scss']
+    selector: 'app-confirm',
+    imports: [CommonModule,
+        MatDialogModule,
+        MatButtonModule,],
+    templateUrl: './confirm.component.html',
+    styleUrls: ['./confirm.component.scss']
 })
 export class ConfirmComponent implements OnInit {
 

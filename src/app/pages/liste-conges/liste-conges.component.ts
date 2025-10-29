@@ -9,9 +9,10 @@ interface AffichageConges extends Conges {
 }
 
 @Component({
-  selector: 'app-liste-conges',
-  templateUrl: './liste-conges.component.html',
-  styleUrls: ['./liste-conges.component.scss']
+    selector: 'app-liste-conges',
+    templateUrl: './liste-conges.component.html',
+    styleUrls: ['./liste-conges.component.scss'],
+    standalone: false
 })
 export class ListeCongesComponent implements OnInit {
   displayedColumns: string[] = ['dateDebut', 'dateFin', 'joursPris', 'actions'];

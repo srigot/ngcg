@@ -8,13 +8,12 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-avatar',
-  standalone: true,
-  imports: [CommonModule,
-    MatMenuModule,
-    MatIconModule,],
-  templateUrl: './avatar.component.html',
-  styleUrls: ['./avatar.component.scss']
+    selector: 'app-avatar',
+    imports: [CommonModule,
+        MatMenuModule,
+        MatIconModule,],
+    templateUrl: './avatar.component.html',
+    styleUrls: ['./avatar.component.scss']
 })
 export class AvatarComponent implements OnInit {
   user$: Observable<User>;

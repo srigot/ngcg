@@ -14,9 +14,10 @@ import { TypesService } from 'src/app/services/types.service';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-edit',
-  templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.scss']
+    selector: 'app-edit',
+    templateUrl: './edit.component.html',
+    styleUrls: ['./edit.component.scss'],
+    standalone: false
 })
 export class EditComponent implements OnInit {
   congeForm = new FormGroup({

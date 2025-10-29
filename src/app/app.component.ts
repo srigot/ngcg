@@ -6,9 +6,10 @@ import { map, shareReplay, withLatestFrom, filter } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent {
   @ViewChild('drawer') drawer: MatSidenav;

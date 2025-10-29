@@ -6,9 +6,10 @@ import { AuthService } from 'src/app/services/auth.service';
 import { CalendarService } from 'src/app/services/calendar.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent {
   user$: Observable<User>;

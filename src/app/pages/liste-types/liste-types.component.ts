@@ -4,9 +4,10 @@ import { TypeConges } from 'src/app/models/type-conges';
 import { TypesService } from 'src/app/services/types.service';
 
 @Component({
-  selector: 'app-liste-types',
-  templateUrl: './liste-types.component.html',
-  styleUrls: ['./liste-types.component.scss']
+    selector: 'app-liste-types',
+    templateUrl: './liste-types.component.html',
+    styleUrls: ['./liste-types.component.scss'],
+    standalone: false
 })
 export class ListeTypesComponent implements OnInit {
   displayedColumns: string[] = ['nom', 'dateDebut', 'dateFin', 'nombreJours', 'joursRestants', 'actions'];
