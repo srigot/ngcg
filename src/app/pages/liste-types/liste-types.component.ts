@@ -1,22 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, inject, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TypeConges } from 'src/app/models/type-conges';
 import { TypesService } from 'src/app/services/types.service';
 
 @Component({
-    selector: 'app-liste-types',
-    templateUrl: './liste-types.component.html',
-    styleUrls: ['./liste-types.component.scss'],
-    standalone: false
+  selector: 'app-liste-types',
+  templateUrl: './liste-types.component.html',
+  styleUrls: ['./liste-types.component.scss'],
+  standalone: false
 })
-export class ListeTypesComponent implements OnInit {
+export class ListeTypesComponent {
+  private _typesServices = inject(TypesService);
+
   displayedColumns: string[] = ['nom', 'dateDebut', 'dateFin', 'nombreJours', 'joursRestants', 'actions'];
-  listeTypes$: Observable<TypeConges[]> = this.typesServices.getTypesAvecRestantFiltres();
-
-  constructor(private typesServices: TypesService) {
-  }
-
-  ngOnInit() {
-  }
-
+  listeTypes: Signal<TypeConges[]> = toSignal(this._typesServices.getTypesAvecRestantFiltres());
 }
