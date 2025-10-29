@@ -5,9 +5,11 @@
         <div class="col">
           <mat-form-field class="full-width">
             <input matInput placeholder="Nom" formControlName="nom">
-            <mat-error *ngIf="typeForm.controls['nom'].hasError('required')">
-              La date de début est <strong>obligatoire</strong>
-            </mat-error>
+            @if (typeForm.controls['nom'].hasError('required')) {
+              <mat-error>
+                La date de début est <strong>obligatoire</strong>
+              </mat-error>
+            }
           </mat-form-field>
         </div>
       </div>
@@ -31,9 +33,11 @@
         <div class="col">
           <mat-form-field class="full-width">
             <input matInput placeholder="Nombre de jours" formControlName="nombreJours">
-            <mat-error *ngIf="typeForm.controls['nombreJours'].hasError('required')">
-              Le nombre de jours est <strong>obligatoire</strong>
-            </mat-error>
+            @if (typeForm.controls['nombreJours'].hasError('required')) {
+              <mat-error>
+                Le nombre de jours est <strong>obligatoire</strong>
+              </mat-error>
+            }
           </mat-form-field>
         </div>
       </div>
@@ -45,8 +49,12 @@
     </ng-container>
     <ng-container actions>
       <button mat-raised-button color="primary" type="submit">Valider</button>
-      <button *ngIf="modeEdition" mat-raised-button color="warn" type="button" (click)="onDelete()">Supprimer</button>
-      <button *ngIf="!modeEdition" mat-raised-button color="warn" type="button" (click)="close()">Annuler</button>
+      @if (modeEdition) {
+        <button mat-raised-button color="warn" type="button" (click)="onDelete()">Supprimer</button>
+      }
+      @if (!modeEdition) {
+        <button mat-raised-button color="warn" type="button" (click)="close()">Annuler</button>
+      }
     </ng-container>
   </app-default-page>
 </form>

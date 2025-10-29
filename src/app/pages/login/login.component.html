@@ -1,13 +1,14 @@
-<div class="container-center" *ngIf="user$ | async as user; else showLogin">
-  <span class="center">
-    <h1>{{ user.displayName }}</h1>
-    <button mat-stroked-button (click)="logout()">Se déconnecter</button>
-  </span>
-</div>
-<ng-template #showLogin>
+@if (user$ | async; as user) {
+  <div class="container-center">
+    <span class="center">
+      <h1>{{ user.displayName }}</h1>
+      <button mat-stroked-button (click)="logout()">Se déconnecter</button>
+    </span>
+  </div>
+} @else {
   <div class="container-center">
     <div class="center">
       <button mat-stroked-button (click)="login()">Se connecter avec Google</button>
     </div>
   </div>
-</ng-template>
+}

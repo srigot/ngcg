@@ -9,53 +9,73 @@
           <input matInput [matDatepicker]="dateDebutPicker" placeholder="Date de début" formControlName="dateDebut">
           <mat-datepicker-toggle matSuffix [for]="dateDebutPicker"></mat-datepicker-toggle>
           <mat-datepicker #dateDebutPicker></mat-datepicker>
-          <mat-error *ngIf="congeForm.controls['dateDebut'].hasError('required')">
-            La date de début est <strong>obligatoire</strong>
-          </mat-error>
+          @if (congeForm.controls['dateDebut'].hasError('required')) {
+            <mat-error>
+              La date de début est <strong>obligatoire</strong>
+            </mat-error>
+          }
         </mat-form-field>
         <mat-form-field>
           <input matInput [matDatepicker]="dateFinPicker" placeholder="Date de fin" formControlName="dateFin">
           <mat-datepicker-toggle matSuffix [for]="dateFinPicker"></mat-datepicker-toggle>
           <mat-datepicker #dateFinPicker></mat-datepicker>
-          <mat-error *ngIf="congeForm.controls['dateFin'].hasError('required')">
-            La date de fin est <strong>obligatoire</strong>
-          </mat-error>
+          @if (congeForm.controls['dateFin'].hasError('required')) {
+            <mat-error>
+              La date de fin est <strong>obligatoire</strong>
+            </mat-error>
+          }
         </mat-form-field>
       </div>
-      <div formArrayName="joursPris" *ngFor="let item of congeForm.get('joursPris')?.controls; let i = index;">
-        <div class="row" [formGroupName]="i">
-          <mat-form-field class="flex-auto">
-            <mat-select placeholder="Type de congés" formControlName="type"
-              [disabled]="!listeTypesConges|| listeTypesConges.length < 1">
-              <mat-option *ngFor="let type of listeTypesConges" [value]="type.key">
-                {{ type.nom }} <small>- (Restant : {{type.nombreJours - type.joursPoses}})</small>
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="item.controls['type'].hasError('required')">
-              Le type de congés est <strong>obligatoire</strong>
-            </mat-error>
-          </mat-form-field>
-          <div>
-            <mat-form-field>
-              <input type="number" number matInput placeholder="Nombre de jours" formControlName="nombreJours">
-              <mat-error *ngIf="item.controls['nombreJours'].hasError('required')">
-                Le nombre de jours est <strong>obligatoire</strong>
-              </mat-error>
+      @for (item of congeForm.get('joursPris')?.controls; track item; let i = $index) {
+        <div formArrayName="joursPris">
+          <div class="row" [formGroupName]="i">
+            <mat-form-field class="flex-auto">
+              <mat-select placeholder="Type de congés" formControlName="type"
+                [disabled]="!listeTypesConges|| listeTypesConges.length < 1">
+                @for (type of listeTypesConges; track type) {
+                  <mat-option [value]="type.key">
+                    {{ type.nom }} <small>- (Restant : {{type.nombreJours - type.joursPoses}})</small>
+                  </mat-option>
+                }
+              </mat-select>
+              @if (item.controls['type'].hasError('required')) {
+                <mat-error>
+                  Le type de congés est <strong>obligatoire</strong>
+                </mat-error>
+              }
             </mat-form-field>
-            <button *ngIf="i == 0" mat-icon-button arial-label="Ajouter type" type="button" (click)="addType()">
-              <mat-icon>add</mat-icon>
-            </button>
-            <button *ngIf="i > 0" mat-icon-button arial-label="Supprimer type" type="button" (click)="deleteType(i)">
-              <mat-icon>clear</mat-icon>
-            </button>
+            <div>
+              <mat-form-field>
+                <input type="number" number matInput placeholder="Nombre de jours" formControlName="nombreJours">
+                @if (item.controls['nombreJours'].hasError('required')) {
+                  <mat-error>
+                    Le nombre de jours est <strong>obligatoire</strong>
+                  </mat-error>
+                }
+              </mat-form-field>
+              @if (i == 0) {
+                <button mat-icon-button arial-label="Ajouter type" type="button" (click)="addType()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              }
+              @if (i > 0) {
+                <button mat-icon-button arial-label="Supprimer type" type="button" (click)="deleteType(i)">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              }
+            </div>
           </div>
         </div>
-      </div>
+      }
     </ng-container>
     <ng-container actions>
       <button mat-raised-button color="primary" type="submit">Valider</button>
-      <button *ngIf="modeEdition" mat-raised-button color="warn" type="button" (click)="onDelete()">Supprimer</button>
-      <button *ngIf="!modeEdition" mat-raised-button color="warn" type="button" (click)="close()">Annuler</button>
+      @if (modeEdition) {
+        <button mat-raised-button color="warn" type="button" (click)="onDelete()">Supprimer</button>
+      }
+      @if (!modeEdition) {
+        <button mat-raised-button color="warn" type="button" (click)="close()">Annuler</button>
+      }
     </ng-container>
   </app-default-page>
 </form>

@@ -6,7 +6,7 @@ describe('CalendarService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: CalendarService = TestBed.get(CalendarService);
+    const service: CalendarService = TestBed.inject(CalendarService);
     expect(service).toBeTruthy();
   });
 });

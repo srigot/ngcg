@@ -1,11 +1,15 @@
 <span>
-  <div *ngIf="user$ | async as user">
-    <img *ngIf="user.photoURL !== null" [src]="user.photoURL" [matMenuTriggerFor]="menu">
-    <mat-menu #menu="matMenu" xPosition="before">
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>exit_to_app</mat-icon>
-        <span>Déconnexion</span>
-      </button>
-    </mat-menu>
-  </div>
+  @if (user$ | async; as user) {
+    <div>
+      @if (user.photoURL !== null) {
+        <img [src]="user.photoURL" [matMenuTriggerFor]="menu">
+      }
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Déconnexion</span>
+        </button>
+      </mat-menu>
+    </div>
+  }
 </span>
